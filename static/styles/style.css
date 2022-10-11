@@ -1,0 +1,148 @@
+.fab {
+    background: #333333;
+    color: #ffffff;
+    position: absolute;
+    bottom: 0;
+    left: 40%;
+    height: 40px;
+    width: 20%;
+    padding-top: 20px;
+    border-radius: 25px 25px 0 0;
+    display: flex;
+    justify-content: center;
+    elevation: higher;
+}
+
+
+.sub-header {
+    padding-top: 5px;
+    padding-left: 2%;
+    color: #f7f7f7;
+    background: #272726;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: 27px;
+}
+
+body {
+    font-family: "Ubuntu", -apple-system, "Segoe UI", "Roboto", "Oxygen", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 300;
+    padding: 0;
+    margin: 0;
+    background-image: url(/static/img/site-background-image.png);
+    background-repeat: repeat;
+    background-color: white;
+}
+
+.slink {
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.header {
+    position: absolute;
+
+    font-size: 1.4rem;
+    top: 27px;
+    left: 0;
+    width: 90%;
+    background: teal;
+    color: #ffffff;
+
+    padding: 15px 5% 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sheet {
+    margin-top: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.leaf {
+    height: auto;
+
+    margin: 30px;
+    background: white;
+    border-radius: 15px;
+    padding-top: 40px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+
+    flex-direction: column;
+    align-items: stretch;
+    width: 40%;
+    max-width: 300px;
+    elevation: higher;
+    box-shadow: 0 10px 24px hsla(0, 0%, 0%, 0.05), 0 20px 48px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.1);;
+}
+
+.bab {
+    background: teal;
+    color: #111111;
+
+    height: auto;
+    width: 30%;
+    padding-top: 10px;
+    border-radius: 25px 25px 0 0;
+    display: flex;
+    justify-content: center;
+}
+.bar-x{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.title {
+    font-size: 25px;
+    padding-bottom: 10px;
+}
+
+.btns {
+    display: inline-flex;
+}
+
+hr {
+    width: 100%;
+    padding: 0px;
+    color: white;
+}
+
+.l-card {
+
+    display: inline-flex;
+    justify-content: space-evenly;
+    /*padding: 10px;*/
+
+
+}
+
+.inb {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.stts {
+    border-radius: inherit;
+    color: teal;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 3px;
+
+    /*margin-b: -10px;*/
+    font-size: 12px;
+    font-variation-settings: 'FILL' 1,
+    'wght' 100,
+    'GRAD' 0,
+    'opsz' 48
+}
