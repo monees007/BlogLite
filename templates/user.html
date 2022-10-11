@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KanBan</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+    <link rel="stylesheet" href="../static/styles/style.css" type="text/css"/>
+    <link rel="stylesheet" href="../static/styles/statusbar.css" type="text/css"/>
+    <style>
+        body {
+            padding-left: 90px;
+            padding-right: 90px;
+        }
+
+        .pane {
+            background: white;
+            margin-top: 90px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            width: auto;
+            height: auto;
+            elevation: higher;
+            box-shadow: 0 10px 24px hsla(0, 0%, 0%, 0.05), 0 20px 48px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.1);;
+        }
+
+        .backdrop {
+            width: -webkit-fill-available;
+        }
+
+        .usrimg {
+            position: relative;
+            border-radius: 360px;
+            border: solid white 5px;
+            width: 30%;
+            margin-top: -15%;
+
+        }
+
+        .actionbtn {
+            position: relative;
+            width: fit-content;
+            margin-top: 20px;
+            height: max-content;
+            background: teal;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 360px;
+
+        }
+
+        .profile {
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            margin-left: 30px;
+        }
+
+        .uname {
+
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .u2 {
+            font-size: 20px;
+            color: gray;
+        }
+
+        .bio {
+            margin-top: 10px;
+        }
+
+        .post {
+            font-size: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .post_user {
+            border-radius: 360px;
+            width: 80px;
+        }
+
+        .post_cont {
+            padding: 0px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .grey {
+            color: grey;
+        }
+
+        .logobtn {
+        }
+
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0,
+            'wght' 600,
+            'GRAD' 0,
+            'opsz' 40
+        }
+
+        .it {
+            display: none;
+        }
+
+        .ii:hover {
+            font-variation-settings: 'FILL' 1;
+            color: teal;
+        }
+
+        .ii:hover + .it {
+            display: inline-block !important;
+        }
+    </style>
+</head>
+<body>
+<div class="sub-header"> monees007</div>
+<div class="header">
+    Blog Lite
+    <a class="slink" href="/login">Sign in</a>
+</div>
+<div class="pane">
+    <img src="../static/img/backdrop.jpeg" class="backdrop">
+    <div style="display: flex; flex-direction: row; justify-content: space-around">
+        <img src="../static/img/userimg.jpg" class="usrimg">
+        <div class="actionbtn"> Follow</div>
+    </div>
+    <div class="profile">
+        <span class="uname">мonееs снаndrа (he/him)</span>
+        <span class=" u2">@monees007</span>
+        <span class="bio">Android Source Developer<br>Institute of Science, BHU<br>POD, IITM<br>Blood Donor / A+</span>
+        <div style="margin-top: 10px; font-size: 16px">
+            <span style="font-weight: bold">1274</span>
+            <span style="color: grey">Following</span>
+            <span style="font-weight: bold">274</span>
+            <span style="color: grey">Followers</span>
+        </div>
+    </div>
+    <hr style="height: 0.1px">
+    <div class="post">
+        <div><img class="post_user" src="../static/img/userimg.jpg"></img>
+        </div>
+
+        <div class="post_cont">
+            <div style="display: flex; flex-direction: row">
+                <span class="bold">мonееs снаndrа (he/him)</span>
+                <span class="grey">@monees007 * Mar31</span>
+            </div>
+            <span>With the fall of Afghanistan's government, women's rights took a big step backward today. This is a sobering reminder that the rise of human rights isn't inevitable, and we have to keep pushing to bolster them.</span>
+            <div style="display: flex; flex-direction: row; justify-content: space-evenly">
+                <div class="logobtn">
+                    <span class="ii material-symbols-rounded">favorite</span>
+                    <span>876</span>
+                    <span class="it">Like</span>
+                </div>
+                <div class="logobtn">
+
+                    <span class="ii material-symbols-rounded">mode_comment</span>
+                    <span>876</span>
+                    <span class="it">Comment</span>
+                </div>
+                <div class="logobtn">
+
+                    <span class="ii material-symbols-rounded">google_plus_reshare</span>
+                    <span>876</span>
+                    <span class="it">Repost</span>
+                </div>
+                <div class="logobtn">
+                    <span class="ii material-symbols-rounded">more_horiz</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="height: 0.1px">
+
+    <div class="post">
+        <div style="display: flex; flex-direction: column; align-items: flex-end">
+            <span class="material-symbols-rounded">google_plus_reshare</span>
+
+            <img class="post_user" src="../static/img/userimg.jpg"></img>
+        </div>
+
+        <div class="post_cont">
+            <span class="reshare grey bold">мonееs снаndrа (he/him) Retweeted</span>
+            <div style="display: inline-flex; flex-direction: row">
+                <span class="bold">мonееs снаndrа (he/him)</span>
+                <span class="grey">@monees007 * Mar31</span>
+            </div>
+            <span>With the fall of Afghanistan's government, women's rights took a big step backward today. This is a sobering reminder that the rise of human rights isn't inevitable, and we have to keep pushing to bolster them.</span>
+            <div style="display: flex; flex-direction: row; justify-content: space-evenly">
+                <div class="logobtn">
+                    <span class="ii material-symbols-rounded">favorite</span>
+                    <span>876</span>
+                    <span class="it">Like</span>
+                </div>
+                <div class="logobtn">
+
+                    <span class="ii material-symbols-rounded">mode_comment</span>
+                    <span>876</span>
+                    <span class="it">Comment</span>
+                </div>
+                <div class="logobtn">
+
+                    <span class="ii material-symbols-rounded">google_plus_reshare</span>
+                    <span>876</span>
+                    <span class="it">Repost</span>
+                </div>
+                <div class="logobtn">
+                    <span class="ii material-symbols-rounded">more_horiz</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KanBan</title>
+
+    <link rel="stylesheet" href="../static/styles/style.css" type="text/css"/>
+    <link rel="stylesheet" href="../static/styles/statusbar.css" type="text/css"/>
+    <style>
+        .pane {
+            height: auto;
+            margin-left: 20%;
+            margin-top: 40%;
+            background: white;
+            border-radius: 15px;
+            padding: 10px 50px;
+            display: flex;
+
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+            elevation: higher;
+            box-shadow: 0 10px 24px hsla(0, 0%, 0%, 0.05), 0 20px 48px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.1);;
+        }
+
+        label {
+            color: #0c0d0e;
+            font-size: 1.15384615rem;
+            font-weight: 600;
+
+            padding-top: 30px;
+        }
+
+        input {
+            padding: 5px;
+            margin-bottom: 20px;
+            margin-top: 5px;
+            height: 15px;
+        {#display: flex;#} align-items: center;
+            width: 225px;
+        {#height: 30.8px;#}
+        }
+
+        input[type="submit"] {
+            width: 235px;
+            height: 30px;
+            color: white;
+            align-items: center;
+            font-weight: 600;
+            border-color: teal;
+            background: teal;
+            border-radius: 3px;
+            margin-top: 25px;
+        }
+
+        a {
+            font-size: 12px;
+            color: teal;
+
+        }
+
+        .row-j {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div class="sub-header"> monees007</div>
+<div class="header">
+    Blog Lite
+    <a class="slink" href="/login">Sign in</a>
+</div>
+<div class="pane">
+    <form action="/login" method="POST">
+        <label>Email<br>
+            <input type="email" name="email" id="email"/>
+        </label>
+        <label>Username<br>
+            <input type="email" name="email" id="email"/>
+        </label>
+        <label>
+            <div class="row-j"><span>Password</span> <br></div>
+            <input type="password" name="password"/>
+        </label>
+        <label>
+            <div class="row-j"><span>Repeat Password</span> <br></div>
+            <input type="password" name="password"/>
+        </label>
+        <input type="submit" value="submit"/>
+    </form>
+</div>
+</body>
+</html>
