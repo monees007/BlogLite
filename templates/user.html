@@ -6,8 +6,9 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 
-    <link rel="stylesheet" href="../static/styles/style.css" type="text/css"/>
-    <link rel="stylesheet" href="../static/styles/statusbar.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/statusbar.css') }}" type="text/css"/>
+    <!--suppress CssInvalidPropertyValue -->
     <style>
         body {
             padding-left: 90px;
@@ -136,12 +137,12 @@
 <div class="pane">
     <img src="../static/img/backdrop.jpeg" class="backdrop">
     <div style="display: flex; flex-direction: row; justify-content: space-around">
-        <img src="../static/img/userimg.jpg" class="usrimg">
+        <img src="{{ user.profile_pic }}" class="usrimg">
         <div class="actionbtn"> Follow</div>
     </div>
     <div class="profile">
-        <span class="uname">мonееs снаndrа (he/him)</span>
-        <span class=" u2">@monees007</span>
+        <span class="uname">{{user.name}}</span>
+        <span class=" u2">{{user.email}}</span>
         <span class="bio">Android Source Developer<br>Institute of Science, BHU<br>POD, IITM<br>Blood Donor / A+</span>
         <div style="margin-top: 10px; font-size: 16px">
             <span style="font-weight: bold">1274</span>
@@ -152,7 +153,7 @@
     </div>
     <hr style="height: 0.1px">
     <div class="post">
-        <div><img class="post_user" src="../static/img/userimg.jpg"></img>
+        <div><img class="post_user" src="{{ user.profile_pic }}"></img>
         </div>
 
         <div class="post_cont">

@@ -13,7 +13,11 @@ class User(UserMixin):
     @staticmethod
     def get(user_id):
         db = src.model.get_db()
-        user = db.execute("select * from user where id =?", user_id).fetchone()
+        print(user_id)
+        user = db.execute(
+            f"SELECT * FROM user WHERE id = '{user_id}'"
+        ).fetchall()[0]
+        # user = db.cursor().execute('select * from user where id =(?)', (user_id,).fetchone())
         if not user:
             return None
 
