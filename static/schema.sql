@@ -19,9 +19,9 @@ CREATE TABLE post
     user TEXT FOREIGN KEY REFERENCES user NOT NULL ,
     date TIMESTAMP NOT NULL ,
     content TEXT NOT NULL,
-    likes TEXT,
-    comments TEXT,
-    forwords TEXT
+    likes TEXT default 0,
+    comments TEXT default 0,
+    forwords TEXT default 0
 
 );
 

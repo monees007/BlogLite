@@ -2,8 +2,11 @@ from __main__ import app
 
 from flask import request, render_template, redirect
 
-from model.model import *
+from src.model import *
 
-owner = 'shamlee@cute.com'
+def save_post(user,date,content):
+    db= get_db()
+    db.execute("insert into post(user,date,content) values(user,date,content)")
+
 
 

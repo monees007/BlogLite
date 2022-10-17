@@ -5,12 +5,16 @@ import traceback
 import requests
 from flask import Flask, request, redirect, json, url_for, render_template
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+from flask_mde import Mde, MdeField
+from flask_wtf import FlaskForm
 from oauthlib.oauth2 import WebApplicationClient
+
+
 
 from src import model
 from src.config import *
 from src.user import User
-import os
+
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
@@ -19,12 +23,18 @@ DATABASE = 'database/sqlite.db'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
 
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
+
+
+
+
+
+
 
 
 @login_manager.user_loader
@@ -36,23 +46,14 @@ def load_user(user_id):
 def index():  # put application's code here
     if not current_user.is_authenticated:
         return redirect(url_for("signup"))
-
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
     else:
         return render_template('user.html', user=current_user)
-
 
 
 @app.route("/signup")
 def signup():
     return render_template('login.html')
+
 
 @app.route("/login")
 def login():
@@ -62,11 +63,10 @@ def login():
 
     # Use library to construct the request for Google login and provide
     # scopes that let you retrieve user's profile from Google
-    request_uri = client.prepare_request_uri(
-        authorization_endpoint,
-        redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"],
-    )
+    request_uri = client.prepare_request_uri(authorization_endpoint,
+                                             redirect_uri=request.base_url + "/callback",
+                                             scope=["openid", "email", "profile"],
+                                             )
     return redirect(request_uri)
 
 
@@ -91,7 +91,6 @@ def callback():
     )
 
     # Parse the tokens!
-    print(token_response.json())
     client.parse_request_body_response(json.dumps(token_response.json()))
 
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
@@ -145,10 +144,3 @@ def logout():
 if __name__ == '__main__':
     app.config.from_object(__name__)
     app.run(debug=True, ssl_context="adhoc")
-    # noinspection PyBroadException
-    try:
-
-        print('zD')
-    except:
-        print("DB Scheme init failed!!")
-
