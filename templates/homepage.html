@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for p in data %}
+ <div class="leaf">
+    <div class="row" style="width: inherit; align-items: start;margin:15px;justify-content: start">
+        <div style="margin:15px;margin-bottom: 0px; width: 50px;height: 50px;background: indianred; border-radius: 90px">
+        </div>
+        <div class="col">
+            <div onclick="location.href='/user/{{ p.username }}'" class="col" style="margin-top: 20px">
+                <span class="bold">{{ p.name }}</span>
+                <div style="width: 10px"></div>
+                <span class="grey">{{ p.username }} * {{ p.date }}</span>
+
+            </div>
+        </div>
+    </div>
+    <div class="col" style="margin: 0 35px 0 35px">
+
+        <div class="content">{{ p.content | markdown }}</div>
+        <div class="row actions">
+            <div class="logobtn">
+                <span class="ii material-symbols-rounded">favorite</span>
+                <span>33</span>
+                <span class="it">Like</span>
+            </div>
+            <div class="logobtn">
+
+                <span class="ii material-symbols-rounded">mode_comment</span>
+                <span>31</span>
+                <span class="it">Comment</span>
+            </div>
+            <div class="logobtn">
+
+                <span class="ii material-symbols-rounded">google_plus_reshare</span>
+                <span>4</span>
+                <span class="it">Repost</span>
+            </div>
+            <div class="logobtn ofo">
+                <div id="more" onclick="ovrflo(this)" class="ofo ii material-symbols-rounded">more_horiz</div>
+                <div class="overflo">
+                    <span class="ii">Edit</span>
+                    <hr>
+                    <span class="ii">Delete</span>
+                    <hr>
+                    <span class="ii">Archive</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+{% endblock %}
