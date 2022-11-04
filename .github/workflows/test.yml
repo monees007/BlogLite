@@ -16,5 +16,6 @@ jobs:
       run: |
         pwd             # /home/runner/work/try/try
         mkdir hello
+        ls
         cd hello
         pwd             # /home/runner/work/try/try/hello
