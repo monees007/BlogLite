@@ -29,12 +29,13 @@ app.add_url_rule('/account', view_func=routes.edit_profile, methods=["GET", "POS
 
 app.add_url_rule('/create_post', view_func=routes.add_post, methods=["POST"])
 app.add_url_rule('/like/<mid>', view_func=routes.like)
-app.add_url_rule('/comment/<mid>', view_func=routes.comment, methods=["POST"])
+app.add_url_rule('/comment/<pid>', view_func=routes.comment, methods=["POST","GET"])
 app.add_url_rule('/share/<mid>', view_func=routes.share)
 app.add_url_rule('/archive/<mid>', view_func=routes.archive)
 app.add_url_rule('/edit/<mid>', view_func=routes.post_update, methods=["POST", "GET"])
 app.add_url_rule('/delete/<mid>', view_func=routes.post_delete)
 
+app.add_url_rule('/api/post/{pid}', view_func=routes.post, methods=["GET", "POST", "UPDATE", "DELETE"])
 app.add_url_rule('/cred', view_func=login.credentials)
 app.add_url_rule('/login', view_func=login.login)
 app.add_url_rule('/logout', view_func=login.logout)

@@ -1,8 +1,59 @@
-from flask import request, redirect, render_template, url_for
+from flask import request, redirect, render_template, url_for, jsonify
 from flask_login import current_user
 
 from src import controller, views
 from src.controller import MdeForm
+
+
+def post(pid=None):
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        form = MdeForm()
+        content = form.editor.data
+        user = current_user.email
+        code = controller.create_post(user, content)
+    elif request.method == 'UPDATE':
+        form = MdeForm()
+        content = form.editor.data
+        controller.update_post(pid, content)
+    elif request.method == 'DELETE':
+        controller.delete_post(pid)
+
+
+def user(uid=None):
+    if request.method == 'GET':
+        form = MdeForm()
+        ship = views.profile(uid)
+        follower = False
+        rw = False
+        if current_user.is_authenticated and current_user.username == uid:
+            rwv = True
+
+        elif current_user.is_authenticated and views.follows(uid):
+            rw = False
+            follower = True
+        else:
+            rw = False
+            follower = False
+        return {
+            'info': ship[0], 'data': ship[1], 'follower': follower, 'rw': rw
+        }
+    elif request.method == 'UPDATE':
+        pass
+    elif request.method == 'DELETE' and current_user.is_authenticated():
+        pass
+
+
+def comment(pid=None, cid=None):
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        pass
+    elif request.method == 'UPDATE':
+        pass
+    elif request.method == 'DELETE':
+        pass
 
 
 def index():
@@ -30,7 +81,6 @@ def post_delete(mid):
     return redirect(request.url, controller.delete_post(mid))
 
 
-
 def post_update(mid, content):
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
@@ -56,7 +106,7 @@ def feed():
     form = MdeForm()
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
-    return render_template('homepage.html', data=views.feeds(), form=form)
+    return render_template('homepageB.html', data=views.feeds(), form=form)
 
 
 def archive(pid):
@@ -75,7 +125,7 @@ def current_profile():
 def follow(user):
     if current_user.is_authenticated:
         if controller.follow(user) != 406:
-            return ("",203)
+            return ("", 203)
     else:
         return redirect(url_for("login"))
 
@@ -94,7 +144,7 @@ def profile(uid):
     else:
         rw = False
         follower = False
-    return render_template('user.html', info=ship[0], data=ship[1], follower=follower, rw=rw, form=form)
+    return render_template('userB.html', info=ship[0], data=ship[1], follower=follower, rw=rw, form=form)
 
 
 def edit_profile():
@@ -109,11 +159,15 @@ def like(mid):
         return redirect(url_for("login"), 406)
 
 
-def comment(mid):
-    if request.method == "POST":
+def comment(pid):
+    if request.method == "GET":
+        req = controller.get_comments(pid).fetchall()
+        if req != 406:
+            return jsonify(req)
+    elif request.method == "POST":
         content = request.form['content']
         if current_user.is_authenticated:
-            if controller.comment(mid, content=content) != 406:
+            if controller.comment(pid, content=content) != 406:
                 return redirect(request.url)
         else:
             return redirect(url_for("login"), 406)

@@ -13,6 +13,7 @@ def profile(user):
     try:
         info = db.execute(f"select * from users where SUBSTR(email,0, INSTR(email, '@')) is '{user}';").fetchone()
         data = db.execute(f"SELECT * FROM posts where username is '{user}' ORDER BY timestamp DESC ").fetchall()
+
         return (info, data)
     except sqlite3.Error as err:
         error_printer(err)

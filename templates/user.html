@@ -64,7 +64,7 @@
 
                 <div class="content">{{ p.content | markdown }}</div>
                 <div class="row actions">
-                    <div class="logobtn">
+                    <div onclick="like(this,{{ p.id }})" class="logobtn">
                         <span class="ii material-symbols-rounded">favorite</span>
                         <span>{{ p.likes }}</span>
                         <span class="it">Like</span>

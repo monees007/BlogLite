@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
-    <div style="margin-top: 50px;" class="me-4 container h1">
-        Trending
-    </div>
     {% for p in data %}
         <div class="post container my-5 py-5">
             <div class="row d-flex justify-content-center">
@@ -29,23 +25,23 @@
                             </div>
 
                             <div class="col pt-1 float-end d-flex justify-content">
-                                <a href="#!" class="btn btn-sm d-flex align-items-center me-1">
-                                    <span>{% if p.likes %} {{ p.likes }}{% endif %}</span>
+                                <a onclick="like(this,{{ p.id }})" class="btn btn-sm d-flex align-items-center me-1">
+
+                                    <span> {{ p.likes }}</span>
                                     <span class=" liked material-symbols-outlined me-2">favorite</span>
 
                                     <p class="mb-0">Like</p>
                                 </a>
                                 <a onclick="commento(this)"
                                    class="btn  btn-sm d-flex align-items-center">
-                                    <span>{% if p.comments %}{{ p.comments }}{% endif %}</span>
-
                                     <span class=" material-symbols-outlined me-2">chat</span>
+                                    <span>{{ p.comments }}</span>
                                     <p class="mb-0">Comment</p>
                                 </a>
                                 <a href="#!" class="btn  btn-sm d-flex align-items-center me-1">
-                                    <span>{% if p.shares %}{{ p.shares }}{% endif %}</span>
 
                                     <span class="material-symbols-outlined me-2">google_plus_reshare</span>
+                                    <span>{{ p.share }}</span>
                                     <p class="mb-0">Repost</p>
                                 </a>
                                 <div class="dropdown d-flex align-items-center">

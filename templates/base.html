@@ -1,131 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link type="text/css" rel="stylesheet" href="../static/styles/style.css"/>
-    <link type="text/css" rel="stylesheet" href="../static/styles/user.css"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Major+Mono+Display">
-    <title>BlogLite</title>
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+    <style>
+        .fab {
+            border-radius: 360px;
+            background: palevioletred;
+            width: 58px;
+            height: 58px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+
+            border: solid 4px;
+        }
+
+        .body {
+            background-image: url(/static/img/site-background-image.png);
+            background-repeat: repeat;
+            background-color: white;
+        }
+
+        .liked{
+            color: #ff0000;
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+
     {{ mde.css }}
     {% block css %}
     {% endblock %}
-
 </head>
-<body style="margin: 0">
-<div class="sub-header"> monees007</div>
-<div class="header">
-    bLOGLitE
-    {% if show_login %}
-            <button onclick="location.href='/login'" class="icbtn"><div style="vertical-align: bottom" class="icbtn material-icons">login</div> Login</button>
+<body>
+<nav class="navbar fixed-top navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30"
+                 class="d-inline-block align-top" alt="">
+            Bootstrap
+        </a>
+        {% if show_login %}
+            <div onclick="location.href='/login'" class="btn btn-dark">
+                <div style="vertical-align: bottom" class="material-symbols-outlined">login</div>
+                Login
+            </div>
 
-    {% else %}
-    <button onclick="location.href='/logout'" class="icbtn material-icons">logout</button>
-    {% endif %}
+        {% else %}
+            <div onclick="location.href='/logout'" class="btn btn-dark material-symbols-outlined">logout</div>
+        {% endif %}
+    </div>
+</nav>
+<div class="container h3  ">
+    Trending
 </div>
 
-    {% block content %}
-    {% endblock %}
+{% block content %}
+{% endblock %}
+<div class="modal fade" id="newPost" tabindex="-1" aria-labelledby="newPostLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action="/create_post" method="POST">
 
-
-
-<div id="card" class="card">
-    <div style="display: flex;align-items: center; flex-direction: row; justify-content: space-between">
-        <h2>New Post</h2>
-        <label id="close" class="close material-icons">
-            close
-            <input id="none" type="checkbox">
-        </label>
-
-    </div>
-    <div {% if not invalid %} style="visibility:hidden;" {% endif %} class="warning">Invalid Character Found</div>
-    <div class="holder">
-
-        <form action="/create_post" method="POST">
-            {{ form.csrf_token }}
-            {{ form.editor }}
-            {{ form.submit }}
-            <input type="submit">
-        </form>
-        <div class=" bay"  style="overflow: scroll; min-width: 48%">    {{ mde.preview }}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPostLabel">Create Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form.csrf_token }}
+                    <div class="row" style="--bs-columns: 4; --bs-gap: 0.5rem;">
+                        <div class="col">{{ form.editor }}</div>
+                        <div class="col">{{ mde.preview }}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="reset" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <input type="submit" class="btn btn-primary">
+                </div>
+            </form>
         </div>
     </div>
-    {{ mde.js }}
 </div>
+{{ mde.js }}
+<nav class="navbar fixed-bottom nav-pills nav-justified navbar-dark bg-light">
+    <div class="container-fluid">
 
-<nav class="nav">
-    <div class="nav__item">
-        <div class="nav__item-content">
-            <i onclick="location.href='/feed'" class="material-icons">rss_feed</i>
+        <a class="nav-item nav-link me-3 active" id="feed" href="/feed">Feeds</a>
+        <a class="nav-item nav-link me-3" id="discover" href="/discover">Discover</a>
+        <a class="nav-item nav-link me-2" id="user" href="/user">Profile</a>
+        <a style="display:none;" class="nav-item nav-link me-2" href="#">Notifications</a>
 
-        </div>
-    </div>
-    <div class="nav__item">
-        <div class="nav__item-content">
-            <i onclick="location.href='/discover'" class="material-icons">travel_explore</i>
+        <div style="background: palevioletred;border: none;" class="btn btn-primary" data-bs-toggle="modal"
+             data-bs-target="#newPost"><span
+                class="material-symbols-outlined">add</span></div>
 
-        </div>
-    </div>
-
-
-    <div class="nav__item">
-        <div class="nav__item-content">
-            <i onclick="location.href='/user'" class="material-icons">person</i>
-
-        </div>
-    </div>
-    <div class="nav__item" style="visibility: hidden"></div>
-    <div id='add' class="fab">
-        <div class="nav__item-content">
-            <i  class="material-icons">add</i>
-
-        </div>
     </div>
 </nav>
 <script>
-    var navItems = document.querySelectorAll(".nav__item");
+    function bar(e) {
+        navItems.forEach(function (e2, i2) {
+            e2.classList.remove("active");
+        })
+        e.classList.add("active");
+    }
+
+    addEventListener("load", (event) => {
+    });
+
+    onload = (event) => {
+        let url = window.location.href;
+
+        if (url.search('feed') > -1) {
+            console.log(document.getElementById("feed"))
+        } else if (url.search('discover') > -1) {
+            bar(document.getElementById("discover"))
+        } else if (url.search('user') > -1) {
+            bar(document.getElementById("user"))
+        }
+    };
+
+    let navItems = document.querySelectorAll(".nav-item");
     navItems.forEach(function (e, i) {
-        e.addEventListener("click", function (e) {
-            navItems.forEach(function (e2, i2) {
-                e2.classList.remove("nav__item--active");
-            })
-            this.classList.add("nav__item--active");
+        e.addEventListener("click", bar);
+        document.addEventListener("load", bar)
+    });
+
+    function commento(e) {
+        let comms = document.querySelectorAll("#commentx");
+        comms.forEach(function (d, i) {
+            d.style.display = "none";
         });
-    });
-    var obj = document.getElementById("add")
-    obj.addEventListener("click", function (obj) {
-        document.getElementById('card').style.display = 'block'
-    });
-    var cls = document.getElementById("close")
-    cls.addEventListener("click", function () {
-        document.getElementById('card').style.display = 'none'
-    });
 
-    window.onclick = function (event) {
-        if (!event.target.matches('.ofo')) {
 
-            var all = document.getElementsByClassName('overflo')
-            var i;
-            for (i = 0; i < all.length; i++) {
-                var openDropdown = all[i];
-                openDropdown.style.display = 'none'
-            }
+        let x = e.parentNode.parentNode.parentNode.querySelector('#commentx')
 
+        if (x.style.display === 'none') {
+            x.style.display = 'block'
+        } else {
+            x.style.display = 'none';
         }
     }
 
-    function ovrflo(e) {
-        e.parentNode.querySelector('.overflo').style.display = 'block'
+    function like(e, pid) {
+        let obh=e.querySelector('.material-symbols-outlined')
+        let obi=e.querySelector('.material-symbols')
+        if (obh.classList.contains('liked')){
+            obh.classList.remove('liked');
+        }else{
+            obh.classList.add('liked');
+        }
     }
-
+    async function load_c(pid) {
+        const data49 = await fetch('http://127.0.0.1:5000/comment/' + pid, {method: 'GET'});
+        const data50 = await data49.json();
+        console.log(data50)
+        for (i,c in data50) {
+            console.log(data50[c]['content'])
+        }
+    }
 </script>
 </body>
 </html>

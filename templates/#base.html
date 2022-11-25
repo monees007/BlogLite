@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link type="text/css" rel="stylesheet" href="../static/styles/style.css"/>
+    <link type="text/css" rel="stylesheet" href="../static/styles/user.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Major+Mono+Display">
+    <title>BlogLite</title>
+    {{ mde.css }}
+    {% block css %}
+    {% endblock %}
+
+</head>
+<body style="margin: 0">
+<div class="sub-header"> monees007</div>
+<div class="header">
+    bLOGLitE
+    {% if show_login %}
+            <button onclick="location.href='/login'" class="icbtn"><div style="vertical-align: bottom" class="icbtn material-icons">login</div> Login</button>
+
+    {% else %}
+    <button onclick="location.href='/logout'" class="icbtn material-icons">logout</button>
+    {% endif %}
+</div>
+
+    {% block content %}
+    {% endblock %}
+
+
+
+<div id="card" class="card">
+    <div style="display: flex;align-items: center; flex-direction: row; justify-content: space-between">
+        <h2>New Post</h2>
+        <label id="close" class="close material-icons">
+            close
+            <input id="none" type="checkbox">
+        </label>
+
+    </div>
+    <div {% if not invalid %} style="visibility:hidden;" {% endif %} class="warning">Invalid Character Found</div>
+    <div class="holder">
+
+        <form action="/create_post" method="POST">
+            {{ form.csrf_token }}
+            {{ form.editor }}
+            {{ form.submit }}
+            <input type="submit">
+        </form>
+        <div class=" bay"  style="overflow: scroll; min-width: 48%">    {{ mde.preview }}
+        </div>
+    </div>
+    {{ mde.js }}
+</div>
+
+<nav class="nav">
+    <div class="nav__item">
+        <div class="nav__item-content">
+            <i  class="material-icons">rss_feed</i>
+
+        </div>
+    </div>
+    <div class="nav__item">
+        <div class="nav__item-content">
+            <i class="material-icons">travel_explore</i>
+
+        </div>
+    </div>
+
+
+    <div class="nav__item">
+        <div class="nav__item-content">
+            <i  class="material-icons">person</i>
+
+        </div>
+    </div>
+    <div class="nav__item" style="visibility: hidden"></div>
+    <div id='add' class="fab">
+        <div class="nav__item-content">
+            <i  class="material-icons">add</i>
+
+        </div>
+    </div>
+</nav>
+<script>
+    var navItems = document.querySelectorAll(".nav__item");
+    navItems.forEach(function (e, i) {
+        e.addEventListener("click", function (e) {
+            navItems.forEach(function (e2, i2) {
+                e2.classList.remove("nav__item--active");
+            })
+            this.classList.add("nav__item--active");
+        });
+    });
+    var obj = document.getElementById("add")
+    obj.addEventListener("click", function (obj) {
+        document.getElementById('card').style.display = 'block'
+    });
+    var cls = document.getElementById("close")
+    cls.addEventListener("click", function () {
+        document.getElementById('card').style.display = 'none'
+    });
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.ofo')) {
+
+            var all = document.getElementsByClassName('overflo')
+            var i;
+            for (i = 0; i < all.length; i++) {
+                var openDropdown = all[i];
+                openDropdown.style.display = 'none'
+            }
+
+        }
+    }
+
+    function ovrflo(e) {
+        e.parentNode.querySelector('.overflo').style.display = 'block'
+    }
+
+</script>
+</body>
+</html>

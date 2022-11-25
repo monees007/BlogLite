@@ -14,6 +14,7 @@ from src.user import User
 from src.model import get_db
 
 
+
 class MdeForm(FlaskForm):
     editor = MdeField()
     submit = SubmitField()
@@ -133,6 +134,16 @@ def comment(pid, content):
     try:
         db.execute(f"insert into comments(user,post,content) values ('{current_user.email}','{pid}','{content}');")
         db.commit()
+    except sqlite3.Error as err:
+        db.rollback()
+        error_printer(err)
+        return 406
+
+def get_comments(pid):
+    db = get_db()
+    try:
+        list = db.execute(f"select * from commentr where pid ='{pid}'")
+        return list
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
