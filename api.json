@@ -1,0 +1,302 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Swagger Faqstore",
+    "description": "A sample API that uses a faqstore as an example to demonstrate features in the OpenAPI 3.0 specification",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Swagger API Team",
+      "email": "apiteam@swagger.io",
+      "url": "http://swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000"
+    }
+  ],
+  "paths": {
+    "/entry": {
+      "get": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Returns all faqs from the system that the user has access to",
+        "description": "Returns all faqs from the system that the user has access to",
+        "operationId": "findFaqs",
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "query",
+            "description": "ID of entry to fetch",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "faq response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Faq"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "FAQ"
+        ],
+        "summary": "Creates a new faq in the store.  Duplicates are not allowed",
+        "description": "Creates a new faq in the store.  Duplicates are not allowed",
+        "operationId": "addFaq",
+        "requestBody": {
+          "description": "Faq to add to the store",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewFaq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "faq response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Faq"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/faqs/{id}": {
+      "get": {
+        "tags": [
+          "FAQ"
+        ],
+        "summary": "Returns a user based on a single ID, if the user does not have access to the faq",
+        "description": "Returns a user based on a single ID, if the user does not have access to the faq",
+        "operationId": "find faq by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of faq to fetch",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "faq response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Faq"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "FAQ"
+        ],
+        "summary": "deletes a single faq based on the ID supplied",
+        "description": "deletes a single faq based on the ID supplied",
+        "operationId": "deleteFaq",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of faq to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "faq deleted"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Faq": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewFaq"
+          },
+          {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "comments": {
+                "type": "integer"
+              },
+              "content": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "liked": {
+                "type": "integer"
+              },
+              "likes": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "profile_pic": {
+                "type": "string"
+              },
+              "shares": {
+                "type": "integer"
+              },
+              "timestamp": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "NewFaq": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "comments": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "liked": {
+            "type": "integer"
+          },
+          "likes": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profile_pic": {
+            "type": "string"
+          },
+          "shares": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

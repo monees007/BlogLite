@@ -25,23 +25,23 @@
                             </div>
 
                             <div class="col pt-1 float-end d-flex justify-content">
-                                <a onclick="like(this,{{ p.id }})" class="btn btn-sm d-flex align-items-center me-1">
+                                <button onclick="like(this,{{ p.id }})" class="likeb btn btn-sm d-flex align-items-center me-1">
 
-                                    <span> {{ p.likes }}</span>
-                                    <span class=" liked material-symbols-outlined me-2">favorite</span>
+                                    <span class=" {% if p.liked>0 %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
+                                    <span class="likec me-2"> {{ p.likes }}</span>
 
-                                    <p class="mb-0">Like</p>
-                                </a>
+                                    <p class="likel mb-0">{% if p.likes ==1 %}Like{% else %}Likes{% endif %}</p>
+                                </button>
                                 <a onclick="commento(this)"
                                    class="btn  btn-sm d-flex align-items-center">
                                     <span class=" material-symbols-outlined me-2">chat</span>
-                                    <span>{{ p.comments }}</span>
-                                    <p class="mb-0">Comment</p>
+                                    <span class="me-1">{{ p.comments }}</span>
+                                    <p class="mb-0"> Comment</p>
                                 </a>
                                 <a href="#!" class="btn  btn-sm d-flex align-items-center me-1">
 
                                     <span class="material-symbols-outlined me-2">google_plus_reshare</span>
-                                    <span>{{ p.share }}</span>
+                                    <span class="me-1">{{ p.share }}</span>
                                     <p class="mb-0">Repost</p>
                                 </a>
                                 <div class="dropdown d-flex align-items-center">

@@ -5,10 +5,7 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 
 def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
-    data = {}
-    for idx, col in enumerate(cursor.description):
-        data[col[0]] = row[idx]
-    return data
+    return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
 def get_db():
     if 'db' not in g:

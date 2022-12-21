@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/BlogLite.iml" filepath="$PROJECT_DIR$/.idea/BlogLite.iml" />
+      <module fileurl="file://$USER_HOME$/Downloads/week8/10a-flask-api-token-based-security/code/.idea/code.iml" filepath="$USER_HOME$/Downloads/week8/10a-flask-api-token-based-security/code/.idea/code.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block css %}{{ mde.css }}{% endblock %}
 {% block content %}
 
     <div style="margin-top: 50px;" class="me-4 container h1">
@@ -28,10 +29,10 @@
                                 {{ p.content | markdown }}
                             </div>
 
-                            <div class="col pt-1 float-end d-flex justify-content">
-                                <a href="#!" class="btn btn-sm d-flex align-items-center me-1">
-                                    <span>{% if p.likes %} {{ p.likes }}{% endif %}</span>
-                                    <span class=" liked material-symbols-outlined me-2">favorite</span>
+                            <div onclick="like(this,{{ p.id }})"  class="col pt-1 float-end d-flex justify-content">
+                                <a onclick="like(this,{{ p.id }})"  href="#!" class="btn btn-sm d-flex align-items-center me-1">
+                                    <span class="me3">{% if p.likes %} {{ p.likes }}{% endif %}</span>
+                                    <span class=" {% if p.liked>0 %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
 
                                     <p class="mb-0">Like</p>
                                 </a>
@@ -100,4 +101,5 @@
             </div>
         </div>
     {% endfor %}
+    {{ mde.js }}
 {% endblock %}

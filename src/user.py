@@ -60,7 +60,7 @@ class User(UserMixin):
         db.commit()
 
     @staticmethod
-    def get_uname( uid):
+    def get_uname(uid):
         db = src.model.get_db()
         # print(user_id)
         user = db.execute(
@@ -71,3 +71,15 @@ class User(UserMixin):
             return None
 
         return user
+
+def get_uname(uid):
+    db = src.model.get_db()
+    # print(user_id)
+    user = db.execute(
+        f"SELECT * FROM users WHERE username = '{uid}'"
+    ).fetchall()
+    # user = db.cursor().execute('select * from user where id =(?)', (user_id,).fetchone())
+    if not len(user):
+        return None
+
+    return user[0]

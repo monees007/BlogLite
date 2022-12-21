@@ -5,20 +5,6 @@ from src import controller, views
 from src.controller import MdeForm
 
 
-def post(pid=None):
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
-        form = MdeForm()
-        content = form.editor.data
-        user = current_user.email
-        code = controller.create_post(user, content)
-    elif request.method == 'UPDATE':
-        form = MdeForm()
-        content = form.editor.data
-        controller.update_post(pid, content)
-    elif request.method == 'DELETE':
-        controller.delete_post(pid)
 
 
 def user(uid=None):

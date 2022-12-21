@@ -1,5 +1,4 @@
 import sqlite3
-import sqlite3
 import sys
 import traceback
 
@@ -70,7 +69,7 @@ def update_post(id, content):
 def retrive_a_post(post_id):
     db = get_db()
     try:
-        data = db.cursor().execute(f"SELECT * post WHERE id='{post_id}'")
+        data = db.cursor().execute(f"SELECT * from posts WHERE id='{post_id}'").fetchall()
 
     except sqlite3.Error as err:
         error_printer(err)
@@ -104,7 +103,14 @@ def cred(cred):
 def archive(pid):
     db = get_db()
     try:
-        db.execute(f"update main.post set status='archived' where id='{pid}' and user='{current_user.email}' ;")
+        post =         data = db.cursor().execute(f"SELECT * from post WHERE id='{pid}'").fetchone()
+
+        # return post
+        if post["status"] == "archived":
+            db.execute(f"update main.post set status='visible' where id='{pid}' and user='{current_user.email}' ;")
+        else:
+            db.execute(f"update main.post set status='archived' where id='{pid}' and user='{current_user.email}' ;")
+
         db.commit()
         return 200
     except sqlite3.Error as err:
@@ -118,15 +124,27 @@ def edit_profile():
     return None
 
 
-def like(mid):
+def like(pid):
     db = get_db()
-    try:
-        db.execute(f"insert into likes(doer, post) values ('{current_user.email}','{mid}');")
-        db.commit()
-    except sqlite3.Error as err:
-        db.rollback()
-        error_printer(err)
-        return 406
+    if db.execute(f"SELECT * FROM likes where post='{pid}' and doer='{current_user.email}'").fetchall() ==[]:
+        try:
+            db.execute(f"insert into likes(doer, post) values ('{current_user.email}','{pid}');")
+            db.commit()
+            return 200
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406
+    else:
+        try:
+            db.execute(f"delete from likes where post='{pid}' and doer='{current_user.email}'")
+            db.commit()
+            return 417
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406
+
 
 
 def comment(pid, content):
@@ -134,6 +152,7 @@ def comment(pid, content):
     try:
         db.execute(f"insert into comments(user,post,content) values ('{current_user.email}','{pid}','{content}');")
         db.commit()
+        return 200
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
@@ -142,13 +161,33 @@ def comment(pid, content):
 def get_comments(pid):
     db = get_db()
     try:
-        list = db.execute(f"select * from commentr where pid ='{pid}'")
+        list = db.execute(f"select * from commentr where pid ='{pid}'").fetchall()
         return list
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
         return 406
 
+def edit_comment(pid,cid, content):
+    db = get_db()
+    try:
+        db.execute(f"update comments set content='{content}' where post='{pid}' and cid='{cid}'")
+        db.commit()
+        return 200
+    except sqlite3.Error as err:
+        db.rollback()
+        error_printer(err)
+        return 406
+
+def delete_comment(cid):
+    db = get_db()
+    try:
+        db.execute(f"delete from comments where cid='{cid}'")
+        db.commit()
+        return 200
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
 
 def share(mid):
     db = get_db()

@@ -5,10 +5,11 @@ from io import BytesIO
 
 import requests
 from flask import request, redirect, url_for, Response
-from flask_login import login_user, login_required, logout_user, current_user, session_protected
+from flask_login import login_user, login_required, logout_user, current_user
 from oauthlib.oauth2 import WebApplicationClient
 from werkzeug.wsgi import FileWrapper
-SESSION_PROTECTION=None
+
+SESSION_PROTECTION = None
 # session_protected=None
 
 import src.controller
@@ -19,7 +20,7 @@ from src.user import User
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
-def login():
+def glogin():
     google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
     request_uri = client.prepare_request_uri(authorization_endpoint,
@@ -46,11 +47,13 @@ def callback():
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
-
+    print(body)
+    print(token_response.json()["access_token"])
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
 
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
+    print("User info endpoint:",userinfo_endpoint)
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
 
@@ -95,6 +98,19 @@ def credentials():
             return Response(b, mimetype="text/plain", direct_passthrough=True, headers=header)
     else:
         return redirect(url_for("login"))
+
+
+def api_login(api_key, api_secret):
+    if api_key and api_secret:
+        db = model.get_db()
+        objx = db.execute(f"SELECT * FROM credentials WHERE api_key = '{api_key}'").fetchone()
+        objy = objx["email"]
+        if objx["api_secret"]==api_secret:
+            userDB = db.execute(f"SELECT * FROM user WHERE email = '{objy}'").fetchone()
+            user = User(
+                mid=userDB["id"], name=userDB["name"], email=userDB["email"], profile_pic=["profile_pic"]
+            )
+            login_user(user, remember=True)
 
 
 @login_required
