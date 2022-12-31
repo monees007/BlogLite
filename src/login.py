@@ -4,6 +4,7 @@ import string
 from io import BytesIO
 
 import requests
+from passlib.apps import custom_app_context as pwd_context
 from flask import request, redirect, url_for, Response
 from flask_login import login_user, login_required, logout_user, current_user
 from oauthlib.oauth2 import WebApplicationClient
@@ -20,7 +21,7 @@ from src.user import User
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
-def glogin():
+def login():
     google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
     request_uri = client.prepare_request_uri(authorization_endpoint,
@@ -73,7 +74,7 @@ def callback():
     # Doesn't exist? Add it to the database.
     db = model.get_db()
 
-    if not User.get(unique_id):
+    if not User.get(unique_id) or 0:
         User.create(unique_id, users_name, users_email, picture)
         print('user created')
     else:
@@ -105,7 +106,7 @@ def api_login(api_key, api_secret):
         db = model.get_db()
         objx = db.execute(f"SELECT * FROM credentials WHERE api_key = '{api_key}'").fetchone()
         objy = objx["email"]
-        if objx["api_secret"]==api_secret:
+        if pwd_context.verify(api_secret, objx["api_secret"]):
             userDB = db.execute(f"SELECT * FROM user WHERE email = '{objy}'").fetchone()
             user = User(
                 mid=userDB["id"], name=userDB["name"], email=userDB["email"], profile_pic=["profile_pic"]

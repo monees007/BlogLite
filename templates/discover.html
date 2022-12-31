@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block css %}{{ mde.css }}{% endblock %}
+
 {% block content %}
 
     <div style="margin-top: 50px;" class="me-4 container h1">
@@ -36,7 +36,7 @@
 
                                     <p class="mb-0">Like</p>
                                 </a>
-                                <a onclick="commento(this)"
+                                <a onclick="comments_hider(this)"
                                    class="btn  btn-sm d-flex align-items-center">
                                     <span>{% if p.comments %}{{ p.comments }}{% endif %}</span>
 
@@ -101,5 +101,5 @@
             </div>
         </div>
     {% endfor %}
-    {{ mde.js }}
+
 {% endblock %}

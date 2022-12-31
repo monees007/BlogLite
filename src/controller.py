@@ -7,16 +7,16 @@ from flask import render_template_string
 from flask_login import current_user
 from flask_mde import MdeField
 from flask_wtf import FlaskForm
-from wtforms import SubmitField
-from src.user import User
+from passlib.apps import custom_app_context as pwd_context
+from wtforms.fields import SubmitField
 
 from src.model import get_db
-
+from src.user import User
 
 
 class MdeForm(FlaskForm):
     editor = MdeField()
-    submit = SubmitField()
+    submit = SubmitField('Save')
 
 
 def error_printer(er):
@@ -77,22 +77,41 @@ def retrive_a_post(post_id):
     return data
 
 
-def follow(uid):
+def follow(email):
     db = get_db()
-    user = User.get_email(uid)
+
     try:
-        db.execute(f"insert into follow (follower, following) values ('{current_user.email}','{user.email}');")
+        db.execute(f"insert into follow (follower, following) values ('{current_user.email}','{email}');")
         db.commit()
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
         return 406
 
+def followings(email):
+    db = get_db()
+    try:
+        data = db.cursor().execute(f"SELECT profile_pic, username, name, email from user where user.email in (select following from follow where follower='{email}');").fetchall()
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
+    return data
+
+def followers(email):
+    db = get_db()
+    try:
+        data = db.cursor().execute(f"SELECT profile_pic, username, name, email from user where user.email in (select follower from follow where following='{email}');").fetchall()
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
+    return data
+
 def cred(cred):
     db = get_db()
     try:
         db.execute(f"delete from credentials where email='{current_user.email}'")
-        db.execute(f"insert into credentials (email,api_key,api_secret) values ('{current_user.email}','{cred['api_key']}','{cred['api_secret']}');")
+        db.execute(
+            f"insert into credentials (email,api_key,api_secret) values ('{current_user.email}','{cred['api_key']}','{pwd_context.encrypt(cred['api_secret'])}');")
         db.commit()
     except sqlite3.Error as err:
         db.rollback()
@@ -103,7 +122,7 @@ def cred(cred):
 def archive(pid):
     db = get_db()
     try:
-        post =         data = db.cursor().execute(f"SELECT * from post WHERE id='{pid}'").fetchone()
+        post = data = db.cursor().execute(f"SELECT * from post WHERE id='{pid}'").fetchone()
 
         # return post
         if post["status"] == "archived":
@@ -119,14 +138,31 @@ def archive(pid):
         return 406
 
 
+def edit_profile(name, email, username, bio):
+    db = get_db()
+    try:
+        post = data = db.cursor().execute(f'''
+            
+            update user
+            set 
+                name = coalesce ('{name}',name),
+                email = coalesce ('{email}',email),
+                username = coalesce ('{current_user.username}',username),
+                bio = coalesce ('{bio}',bio)
+           where
+              id = '{username}' OR username= '{username}' and coalesce('{name}','{email}','{username}','{bio}') is not null''')
 
-def edit_profile():
-    return None
+        db.commit()
+        return 200
+    except sqlite3.Error as err:
+        db.rollback()
+        error_printer(err)
+        return 406
 
 
 def like(pid):
     db = get_db()
-    if db.execute(f"SELECT * FROM likes where post='{pid}' and doer='{current_user.email}'").fetchall() ==[]:
+    if db.execute(f"SELECT * FROM likes where post='{pid}' and doer='{current_user.email}'").fetchall() == []:
         try:
             db.execute(f"insert into likes(doer, post) values ('{current_user.email}','{pid}');")
             db.commit()
@@ -146,7 +182,6 @@ def like(pid):
             return 406
 
 
-
 def comment(pid, content):
     db = get_db()
     try:
@@ -158,6 +193,7 @@ def comment(pid, content):
         error_printer(err)
         return 406
 
+
 def get_comments(pid):
     db = get_db()
     try:
@@ -168,7 +204,8 @@ def get_comments(pid):
         error_printer(err)
         return 406
 
-def edit_comment(pid,cid, content):
+
+def edit_comment(pid, cid, content):
     db = get_db()
     try:
         db.execute(f"update comments set content='{content}' where post='{pid}' and cid='{cid}'")
@@ -178,6 +215,7 @@ def edit_comment(pid,cid, content):
         db.rollback()
         error_printer(err)
         return 406
+
 
 def delete_comment(cid):
     db = get_db()
@@ -189,12 +227,24 @@ def delete_comment(cid):
         error_printer(err)
         return 406
 
-def share(mid):
+
+def share(pid):
     db = get_db()
-    try:
-        db.execute(f"insert into shares(doer, post) values ('{current_user.email}','{mid}');")
-        db.commit()
-    except sqlite3.Error as err:
-        db.rollback()
-        error_printer(err)
-        return 406
+    if db.execute(f"SELECT * FROM shares where post='{pid}' and doer='{current_user.email}'").fetchall() == []:
+        try:
+            db.execute(f"insert into shares(doer, post) values ('{current_user.email}','{pid}');")
+            db.commit()
+            return 200
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406
+    else:
+        try:
+            db.execute(f"delete from shares where post='{pid}' and doer='{current_user.email}'")
+            db.commit()
+            return 417
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406

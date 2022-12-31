@@ -2,6 +2,23 @@
 {% block css %}
 {% endblock %}
 {% block content %}
+    <style>
+        .masker {
+            background-color: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            border-radius: inherit;
+        }
+        .modal{
+            z-index: 1066 !important;
+        }
+        .modal-backdrop.show {
+            z-index: 1065 !important;
+        }
+    </style>
     <section class="h-100 gradient-custom-2">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -14,28 +31,28 @@
                                      alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                      style="width: 150px; z-index: 1">
                                 <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal" data-mdb-ripple-color="dark"
+                                        data-bs-target="#edit_profile_modal" data-mdb-ripple-color="dark"
                                         style="z-index: 1;">
-                                    Edit profile
+                                    Organise
                                 </button>
                             </div>
                             <div class="ms-3" style="margin-top: 130px;">
-                                <h5>{{ info['name']}}</h5>
+                                <h5>{{ info['name'] }}</h5>
                                 <p>{{ info['username'] }}</p>
                             </div>
                         </div>
                         <div class="p-4 text-black" style="background-color: #f8f9fa;">
                             <div class="d-flex justify-content-end text-center py-1">
                                 <div>
-                                    <p class="mb-1 h5">{{ info['posts'] }}</p>
+                                    <p class="mb-1 h5">{{ info['posts'] or 0 }}</p>
                                     <p class="small text-muted mb-0">Entries</p>
                                 </div>
                                 <div class="px-3">
-                                    <p class="mb-1 h5">{{ info['followers'] }}</p>
+                                    <p class="mb-1 h5">{{ info['followers'] or 0 }}</p>
                                     <p class="small text-muted mb-0">Followers</p>
                                 </div>
                                 <div>
-                                    <p class="mb-1 h5">{{ info['followers'] }}</p>
+                                    <p class="mb-1 h5">{{ info['followers'] or 0 }}</p>
                                     <p class="small text-muted mb-0">Following</p>
                                 </div>
                             </div>
@@ -45,106 +62,12 @@
                         <div class="card-body p-4 text-black">
                             <div class="mb-5">
                                 <div class="p-4" style="background-color: #f8f9fa;">
-                                    <p class="font-italic mb-1">{{ info['bio'] }}</p>
+                                    <p class="font-italic mb-1">{{ info['bio'] | markdown }}</p>
 
                                 </div>
                             </div>
 
-                            {% for p in data %}
 
-
-                                <div class="post container my-5 py-5">
-                                    <div class="row d-flex justify-content-center">
-
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="d-flex flex-start align-items-center">
-                                                        <img class="rounded-circle shadow-1-strong me-3"
-                                                             src="{{ p.profile_pic }}"
-                                                             alt="avatar" width="60"
-                                                             height="60"/>
-                                                        <div>
-                                                            <h6 onclick="location.href='/user/{{ p.username }}'" class="fw-bold text-primary mb-1">{{ p.name }}</h6>
-                                                            <p class="text-muted small mb-0">
-                                                                {{ p.username }} - {{ p.date }}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mt-3 mb-4 pb-2">
-                                                        {{ p.content | markdown }}
-                                                    </div>
-
-                                                    <div onclick="like(this,{{ p.id }})" class="col pt-1 float-end d-flex justify-content">
-                                                        <a href="" class="btn btn-sm d-flex align-items-center me-1">
-                                                            <span class=" {% if p.liked>0 %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
-                                                            <span> {{ p.likes }}</span>
-                                                            <p class="mb-0">Like</p>
-                                                        </a>
-                                                        <a onclick="commento(this)"
-                                                           class="btn  btn-sm d-flex align-items-center">
-                                                            <span class=" material-symbols-outlined me-2">chat</span>
-                                                            <span>{{ p.comments }}</span>
-                                                            <p class="mb-0">Comment</p>
-                                                        </a>
-                                                        <a href="#!" class="btn  btn-sm d-flex align-items-center me-1">
-
-                                                            <span class="material-symbols-outlined me-2">google_plus_reshare</span>
-                                                            <span>{{ p.share }}</span>
-                                                            <p class="mb-0">Repost</p>
-                                                        </a>
-                                                        <div class="dropdown d-flex align-items-center">
-                                                            <button class="btn btn-sm " type="button"
-                                                                    id="dropdownMenuButton1"
-                                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <span class="material-symbols-outlined">more_vert</span>
-
-                                                            </button>
-                                                            <ul class="dropdown-menu"
-                                                                aria-labelledby="dropdownMenuButton1">
-                                                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                                <li><a class="dropdown-item" href="#">Archive</a></li>
-                                                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-
-                                               <section style="display: none" class="card-footer py-3" id="commentx">
-                    <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
-                        <div class="d-flex flex-start w-100">
-                            <img class="rounded-circle shadow-1-strong me-3"
-                                 src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" alt="avatar"
-                                 width="40"
-                                 height="40"/>
-                            <div class="form-outline w-100">
-                                <small>Nice post Architectiure</small>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
-
-                        <div class="d-flex flex-start w-100">
-                            <img class="rounded-circle shadow-1-strong me-3"
-                                 src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" alt="avatar"
-                                 width="40"
-                                 height="40"/>
-                            <div class="form-outline w-100">
-                <textarea class="form-control" id="textAreaExample" rows="2"
-                          style="background: #fff;"></textarea>
-                            </div>
-                        </div>
-                        <div class="float-end mt-2 pt-1">
-                            <button type="button" class="btn btn-primary btn-sm">Post comment</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm">Cancel</button>
-                        </div>
-                    </div>
-                </section>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -152,12 +75,113 @@
         </div>
     </section>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    {% for p in data %}
+        <div
+                {% if p['status']=='archived' %}
+
+                    {#            filter:blur(2px) brightness(.5)"#}
+                {% endif %}s
+                class="post container my-5 py-5">
+
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12 col-lg-10 col-xl-8">
+                    <div class="card">
+                        <div style="position: relative" class="card-body">
+                            {% if p['status']=='archived' %}
+                                <div onclick="archive({{ p.id }})" class="masker text-light d-flex justify-content-center flex-column text-center">
+                                    <h2 class="bold">Archived</h2>
+                                    <p class="m-0">Tap to Republish</p>
+                                </div>
+                            {% endif %}
+                            <div class="d-flex flex-start align-items-center">
+                                <img class="rounded-circle shadow-1-strong me-3"
+                                     src="{{ p.profile_pic }}"
+                                     alt="avatar" width="60"
+                                     height="60"/>
+                                <div>
+                                    <h6 onclick="location.href='/user/{{ p.username }}'"
+                                        class="fw-bold text-primary mb-1">{{ p.name }}</h6>
+                                    <p class="text-muted small mb-0">
+                                        {{ p.username }} - {{ p.date }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 mb-4 pb-2">
+                                {{ p.content | markdown }}
+                            </div>
+
+                            <div class="col pt-1 float-end d-flex justify-content">
+                                <button onclick="like(this,{{ p.id }})"
+                                        class="like_btn btn btn-sm d-flex align-items-center me-1">
+                                    <span class=" {% if p.liked>0 %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
+                                    <span class="like_count me-2"> {{ p.likes }}</span>
+                                    <span class="like_label d-none d-sm-block mb-0">{% if p.likes ==1 %}Like{% else %}
+                                        Likes{% endif %}</span>
+                                </button>
+                                <a onclick="comments_hider(this ,{{ p.id }})"
+                                   class="comment_btn btn  btn-sm d-flex align-items-center">
+                                    <span class="comment_icon material-symbols-outlined me-2">chat</span>
+                                    <span class="comment_count me-1">{{ p.comments }}</span>
+                                    <p class="comment_label mb-0 d-none d-sm-block"> Comment</p>
+                                </a>
+                                <button onclick="repost(this,{{ p.id }})"
+                                        class="repost_btn btn btn-sm d-flex align-items-center me-1">
+
+                                    <span class="repost_icon {% if p.shared %}text-primary{% endif %} material-symbols-outlined me-2">google_plus_reshare</span>
+                                    <span class="repost_count me-1 likec">{{ p.shares }}</span>
+
+                                </button>
+                                <div class="dropdown d-flex align-items-center">
+                                    <button class="btn btn-sm " type="button"
+                                            id="dropdownMenuButton1"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-symbols-outlined">more_vert</span>
+
+                                    </button>
+                                    <ul class="dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton1">
+                                        <li>
+                                            <div class="dropdown-item" onclick="edit_post()">Edit</div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-item" onclick="archive({{ p.id }})">Archive</div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-item" onclick="delete_post({{ p.id }})">Delete</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <section style="display: none" class="card-footer py-3" id="commentx">
+
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {#    {% if p['status']=='archived' %}#}
+        {##}
+        {#        <div class="mask text-light d-flex justify-content-center flex-column text-center"#}
+        {#             style="background-color: rgba(0, 0, 0, 0.5)">#}
+        {##}
+        {#            <h4>Custom heading</h4>#}
+        {#            <p class="m-0">paragraph</p>#}
+        {#        </div>#}
+        {#        </div>{% endif %} }}#}
+
+
+    {% endfor %}
+    <div class="modal fade" id="edit_profile_modal" tabindex="-1" aria-labelledby="edit_profile_modalLabel" style="z-index: 1000"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/account" method="POST">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                        <h5 class="modal-title" id="edit_profile_modalLabel">Edit Profile</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -183,38 +207,38 @@
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Name</label>
                                         <div class="col-sm-9">
-                                            <input type="text" value="{{ info["name"] }}" class="form-control" id="e-name">
+                                            <input type="text" value="{{ info["name"] }}" class="form-control"
+                                                   id="e-name" name="name">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Username</label>
                                         <div class="col-sm-9">
-                                            <input type="text" value="{{ info["username"] }}" class="form-control" id="E-username">
+                                            <input type="text" name="username" value="{{ info["username"] }}" class="form-control" id="username">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
                                         <div class="col-sm-9">
-                                            <input type="email" value="{{ info["email"] }}" class="form-control" id="E-email">
+                                            <input type="email" name="email" value="{{ info["email"] }}" class="form-control"
+                                                   id="E-email">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Bio</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" value="{{ info["bio"] }}" id="E-bio" rows="3"></textarea>
-
+                                            <textarea class="form-control" name="bio" id="E-bio"
+                                                      rows="3">{{ info["bio"] }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <label for="inputPassword3" class="col-sm-3 col-form-label">Password</label>
-                                        <div class="col-sm-9">
-                                            <input type="password" class="form-control" id="inputPassword3">
-                                        </div>
+                                        <button type="button" class="btn btn-outline-dark" onclick="location.href='/cred'" data-mdb-ripple-color="dark"
+                                        style="z-index: 1;">
+                                    Get API Credentials
+                                </button>
                                     </div>
                                 </div>
                             </div>
-
-
                         </section>
 
                     </div>

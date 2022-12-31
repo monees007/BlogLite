@@ -25,24 +25,13 @@ def user(uid=None):
         return {
             'info': ship[0], 'data': ship[1], 'follower': follower, 'rw': rw
         }
-    elif request.method == 'UPDATE':
-        pass
-    elif request.method == 'DELETE' and current_user.is_authenticated():
-        pass
 
 
-def comment(pid=None, cid=None):
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
-        pass
-    elif request.method == 'UPDATE':
-        pass
-    elif request.method == 'DELETE':
-        pass
+
 
 
 def index():
+    # return render_template('index.html', form=MdeForm())
     if not current_user.is_authenticated:
         return search()
     else:
@@ -134,8 +123,13 @@ def profile(uid):
 
 
 def edit_profile():
-    return None
-
+    if request.method == "POST":
+        name=request.form['name']
+        bio=request.form['bio']
+        email=request.form['email']
+        username=request.form['username']
+        code = controller.edit_profile(name,email,username,bio)
+        return redirect(url_for("user"),code)
 
 def like(mid):
     if current_user.is_authenticated:

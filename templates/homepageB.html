@@ -25,25 +25,26 @@
                             </div>
 
                             <div class="col pt-1 float-end d-flex justify-content">
-                                <button onclick="like(this,{{ p.id }})" class="likeb btn btn-sm d-flex align-items-center me-1">
-
+                                <button onclick="like(this,{{ p.id }})"
+                                        class="like_btn btn btn-sm d-flex align-items-center me-1">
                                     <span class=" {% if p.liked>0 %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
-                                    <span class="likec me-2"> {{ p.likes }}</span>
-
-                                    <p class="likel mb-0">{% if p.likes ==1 %}Like{% else %}Likes{% endif %}</p>
+                                    <span class="like_count me-2"> {{ p.likes }}</span>
+                                    <span class="like_label d-none d-sm-block mb-0">{% if p.likes ==1 %}Like{% else %}
+                                        Likes{% endif %}</span>
                                 </button>
-                                <a onclick="commento(this)"
-                                   class="btn  btn-sm d-flex align-items-center">
-                                    <span class=" material-symbols-outlined me-2">chat</span>
-                                    <span class="me-1">{{ p.comments }}</span>
-                                    <p class="mb-0"> Comment</p>
+                                <a onclick="comments_hider(this ,{{ p.id }})"
+                                   class="comment_btn btn  btn-sm d-flex align-items-center">
+                                    <span class="comment_icon material-symbols-outlined me-2">chat</span>
+                                    <span class="comment_count me-1">{{ p.comments }}</span>
+                                    <p class="comment_label mb-0 d-none d-sm-block"> Comment</p>
                                 </a>
-                                <a href="#!" class="btn  btn-sm d-flex align-items-center me-1">
+                                <button onclick="repost(this,{{ p.id }})"
+                                        class="repost_btn btn btn-sm d-flex align-items-center me-1">
 
-                                    <span class="material-symbols-outlined me-2">google_plus_reshare</span>
-                                    <span class="me-1">{{ p.share }}</span>
-                                    <p class="mb-0">Repost</p>
-                                </a>
+                                    <span class="repost_icon {% if p.shared %}text-primary{% endif %} material-symbols-outlined me-2">google_plus_reshare</span>
+                                    <span class="repost_count me-1 likec">{{ p.shares }}</span>
+
+                                </button>
                                 <div class="dropdown d-flex align-items-center">
                                     <button class="btn btn-sm " type="button"
                                             id="dropdownMenuButton1"
@@ -53,9 +54,15 @@
                                     </button>
                                     <ul class="dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        <li><a class="dropdown-item" href="#">Archive</a></li>
-                                        <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        <li>
+                                            <div class="dropdown-item" onclick="edit_post()">Edit</div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-item" onclick="archive({{ p.id }})">Archive</div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-item" onclick="delete_post({{ p.id }})">Delete</div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -95,5 +102,6 @@
                 </div>
             </div>
         </div>
+
     {% endfor %}
 {% endblock %}

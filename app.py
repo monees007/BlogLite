@@ -9,23 +9,23 @@ from flask_restful import Api
 from src import ends, routes, login
 from src.user import User
 
-if True:
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    app = Flask(__name__)
-    app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
-    api = Api(app)
-    mde = Mde(app)
-    Misaka(app)
-    DATABASE = 'database/sqlite.db'
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-    app.config['MDEDITOR_FILE_UPLOADER'] = os.path.join(basedir,
-                                                        'uploads')  # this floder uesd to save your uploaded image
 
-api.add_resource(ends.Like, '/api/like')
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+api = Api(app)
+mde = Mde(app)
+Misaka(app)
+DATABASE = 'database/sqlite.db'
+login_manager = LoginManager()
+login_manager.init_app(app)
+app.config['MDEDITOR_FILE_UPLOADER'] = os.path.join(basedir,
+                                                    'uploads')  # this floder uesd to save your uploaded image
+
 api.add_resource(ends.Entry, "/api/entry")
-api.add_resource(ends.Login, "/api/login")
+# api.add_resource(ends.Login, "/api/login")
 api.add_resource(ends.User, "/api/user")
 api.add_resource(ends.Comment, "/api/comment")
 
@@ -48,9 +48,9 @@ app.add_url_rule('/delete/<mid>', view_func=routes.post_delete)
 
 # app.add_url_rule('/api/post/{pid}', view_func=routes.post, methods=["GET", "POST", "UPDATE", "DELETE"])
 app.add_url_rule('/cred', view_func=login.credentials)
-app.add_url_rule('/glogin', view_func=login.glogin)
+app.add_url_rule('/login', view_func=login.login)
 app.add_url_rule('/logout', view_func=login.logout)
-app.add_url_rule('/glogin/callback', view_func=login.callback)
+app.add_url_rule('/login/callback', view_func=login.callback)
 
 
 # ToDo: AJAX $likes comments
@@ -65,5 +65,6 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
+    mde.init_app(app)
     app.config.from_object(__name__)
     app.run(debug=True, ssl_context="adhoc")

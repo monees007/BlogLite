@@ -17,7 +17,7 @@ class User(UserMixin):
         # print(user_id)
         user = db.execute(
             f"SELECT * FROM user WHERE id = '{user_id}'"
-        ).fetchall()[0]
+        ).fetchone()
         # user = db.cursor().execute('select * from user where id =(?)', (user_id,).fetchone())
         if not user:
             return None
@@ -54,8 +54,8 @@ class User(UserMixin):
     def create(mid, name, email, profile_pic, password=None):
         db = src.model.get_db()
         db.execute(
-            "Insert into user values(?,?,?,?)",
-            (mid, name, email, profile_pic)
+            "Insert into user values(?,?,?,?,?,?,?,?)",
+            (mid, name, email, profile_pic,"","","",email.split('@')[0])
         )
         db.commit()
 

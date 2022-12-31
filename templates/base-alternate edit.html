@@ -14,23 +14,24 @@
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+    {#    <script src="{{url_for('static', filename='js/Markdown.Editor.js')}}"></script>#}
+    {#    <script src="{{url_for('static', filename='js/mde.js')}}"></script>#}
+
+
 
     <style>
-        .wmd-prompt-dialog {
+        .wmd-prompt-dialog{
             z-index: 2000 !important;
         }
-
-        .wmd-prompt-background {
+        .wmd-prompt-background{
             z-index: 1999 !important;
         }
-
-        .modal:nth-of-type(even) {
-            z-index: 1062 !important;
-        }
-
-        .modal-backdrop.show:nth-of-type(even) {
-            z-index: 999 !important;
-        }
+        {#.modal:nth-of-type(even) {#}
+        {#    z-index: 1062 !important;#}
+        {#}#}
+        {#.modal-backdrop.show:nth-of-type(even) {#}
+        {#    z-index: 1061 !important;#}
+        {#}#}
 
 
         .wmd-button > span {
@@ -92,62 +93,56 @@
     Trending
 </div>
 
-{% block content %}
-{% endblock %}
+{#{% block content %}#}
+{#{% endblock %}#}
 
 {{ mde.js }}
 
-<div class="modal fade " data-bs-backdrop="false" id="newPost" tabindex="-1" aria-labelledby="newPostLabel"
-     aria-hidden="true">
-    <div data-backdrop="false" class="modal-dialog modal-fullscreen-lg-down modal-xl">
-        <div class="modal-content">
-            <form action="/create_post" method="POST">
+{#    </div>#}
+{#</div>#}
+{{ mde.js }}
+<div class="card">
 
-                <div class="modal-header">
-                    <h5 class="modal-title col-10" id="newPostLabel">Create Post</h5>
-                    <button type="button"
-                            onclick="window.open('https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')"
-                            class="btn"><span style="vertical-align: bottom"
-                                              class="material-symbols-outlined">help</span></button>
+</div>
+
+<div class="card position-absolute top-50 start-50 translate-middle" >
+
+    <div class="card-header  text-center">
+  <div class="row">
+    <div class="col">
+                    <h5 class="" id="newPostLabel">Create Post</h5>
+    </div>
+    <div class="col">
+                    <button type="button" onclick="window.open('https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')" class="btn"><span style="vertical-align: bottom" class="material-symbols-outlined">help</span> </button>
+    </div>
+    <div class="col">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+    </div>
+  </div>
+</div>
+  <div class="card-body">
+     <form action="/create_post" method="POST">
+
+
+                <div class="">
 
                     {{ form.csrf_token }}
                     <div class="row" style="--bs-columns: 4; --bs-gap: 0.5rem;">
                         <div class="col" style="min-width: 425px">{{ form.editor }}</div>
                         <div class="col" style="min-width: 425px">{{ mde.preview }}</div>
                     </div>
-                    {{ mde.preview }}
+                        {{ mde.preview }}
 
                 </div>
-                <div class="modal-footer">
+                <div class="">
                     <input type="reset" class="btn btn-secondary" data-bs-dismiss="modal">
                     <input type="submit" class="btn btn-primary">
                 </div>
             </form>
-        </div>
-    </div>
+  </div>
 </div>
 
 
-<div class="modal fade " data-bs-backdrop="false" id="userlist" tabindex="-1" aria-labelledby="Users"
-     aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                    <h5 class="modal-title col-10" id="userlistLabel">Create Post</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="userlist" aria-label="Close"></button>
-
-
-            </div>
-            <div class="modal-body" id="user_list_children">
-
-            </div>
-        </div>
-    </div>
-</div>
 <nav class="navbar fixed-bottom nav-pills nav-justified navbar-dark bg-light">
     <div class="container-fluid">
 
@@ -163,9 +158,6 @@
     </div>
 </nav>
 <script>
-
-
-
     function bar(e) {
         navItems.forEach(function (e2, i2) {
             e2.classList.remove("active");
