@@ -1,6 +1,6 @@
 import sqlite3
 
-from flask import render_template_string, jsonify
+from flask import render_template_string
 from flask_login import current_user
 
 from src.controller import error_printer
@@ -8,11 +8,15 @@ from src.model import get_db
 from src.user import User
 
 
-def profile(user):
+def profile(username=None,email=None):
     db = get_db()
     try:
-        info = db.execute(f"select * from users where SUBSTR(email,0, INSTR(email, '@')) is '{user}';").fetchone()
-        data = db.execute(f"SELECT * FROM posts_all where username is '{user}' ORDER BY timestamp DESC ").fetchall()
+        if username:
+            info = db.execute(f"select * from users where users.username is '{username}';").fetchone()
+            data = db.execute(f"SELECT * FROM posts_all where posts_all.username is '{username}' ORDER BY timestamp DESC ").fetchall()
+        elif email:
+            info = db.execute(f"select * from users where users.email is '{email}';").fetchone()
+            data = db.execute(f"SELECT * FROM posts_all where posts_all.email is '{email}' ORDER BY timestamp DESC ").fetchall()
 
         return (info, data)
     except sqlite3.Error as err:
@@ -42,8 +46,6 @@ def feeds():
         return 406
 
 
-def search():
-    pass
 
 
 def invalid404():

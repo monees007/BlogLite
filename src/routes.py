@@ -5,8 +5,6 @@ from src import controller, views
 from src.controller import MdeForm
 
 
-
-
 def user(uid=None):
     if request.method == 'GET':
         form = MdeForm()
@@ -25,9 +23,6 @@ def user(uid=None):
         return {
             'info': ship[0], 'data': ship[1], 'follower': follower, 'rw': rw
         }
-
-
-
 
 
 def index():
@@ -92,7 +87,7 @@ def archive(pid):
 
 def current_profile():
     if current_user.is_authenticated:
-        return profile(current_user.username)
+        return profile(username=None, email=current_user.email)
     else:
         return redirect(url_for("login"))
 
@@ -105,15 +100,18 @@ def follow(user):
         return redirect(url_for("login"))
 
 
-def profile(uid):
+def profile(username=None, email=None):
     form = MdeForm()
-    ship = views.profile(uid)
+    if username:
+        ship = views.profile(username=username)
+    else:
+        ship = views.profile(email=email)
     follower = False
     rw = False
-    if current_user.is_authenticated and current_user.username == uid:
-        rwv = True
+    if current_user.is_authenticated and (current_user.username == username or current_user.email == email):
+        rw = True
 
-    elif current_user.is_authenticated and views.follows(uid):
+    elif username and current_user.is_authenticated and views.follows(username):
         rw = False
         follower = True
     else:
@@ -124,12 +122,13 @@ def profile(uid):
 
 def edit_profile():
     if request.method == "POST":
-        name=request.form['name']
-        bio=request.form['bio']
-        email=request.form['email']
-        username=request.form['username']
-        code = controller.edit_profile(name,email,username,bio)
-        return redirect(url_for("user"),code)
+        name = request.form['name']
+        bio = request.form['bio']
+        email = request.form['email']
+        username = request.form['username']
+        code = controller.edit_profile(name, email, username, bio)
+        return redirect(url_for("user"), code)
+
 
 def like(mid):
     if current_user.is_authenticated:

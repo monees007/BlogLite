@@ -24,13 +24,15 @@
             z-index: 1999 !important;
         }
 
-        .modal:nth-of-type(even) {
-            z-index: 1062 !important;
-        }
-
-        .modal-backdrop.show:nth-of-type(even) {
-            z-index: 999 !important;
-        }
+        {#.modal:nth-of-type(even) {#}
+        {#    z-index: 1062 !important;#}
+        {
+        #}#}
+        {##}
+        {#.modal-backdrop.show:nth-of-type(even) {#}
+        {#    z-index: 999 !important;#}
+        {
+        #}#}
 
 
         .wmd-button > span {
@@ -71,12 +73,17 @@
 </head>
 <body>
 <nav class="navbar fixed-top navbar-dark bg-dark">
-    <div class="container-fluid">
+    <div class="container-fluid ">
         <a class="navbar-brand" href="#">
             <img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30"
                  class="d-inline-block align-top" alt="">
             Bootstrap
         </a>
+        <div>
+        <div data-bs-toggle="modal"
+             data-bs-target="#usersearch" class="btn btn-dark">
+            <div style="vertical-align: bottom" class="material-symbols-outlined">search</div>
+        </div>
         {% if show_login %}
             <div onclick="location.href='/login'" class="btn btn-dark">
                 <div style="vertical-align: bottom" class="material-symbols-outlined">login</div>
@@ -86,6 +93,7 @@
         {% else %}
             <div onclick="location.href='/logout'" class="btn btn-dark material-symbols-outlined">logout</div>
         {% endif %}
+        </div>
     </div>
 </nav>
 <div class="container h3  ">
@@ -131,19 +139,38 @@
 </div>
 
 
-<div class="modal fade " data-bs-backdrop="false" id="userlist" tabindex="-1" aria-labelledby="Users"
+<div class="modal fade " data-bs-backdrop="true" id="userlist" tabindex="-1" aria-labelledby="Users"
      aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                    <h5 class="modal-title col-10" id="userlistLabel">Create Post</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="userlist" aria-label="Close"></button>
+                <h5 class="modal-title col-10" id="userlistLabel">Create Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
 
             </div>
             <div class="modal-body" id="user_list_children">
 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade " data-bs-backdrop="true" id="usersearch" tabindex="-1" aria-labelledby="Users"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-around">
+                    <input onkeyup="search_users()" type="text" class="form-control" id="search_term"
+                           placeholder="Name, Username or Email">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+
+            </div>
+            <div class="modal-body" id="search_list_children">
             </div>
         </div>
     </div>
@@ -163,7 +190,6 @@
     </div>
 </nav>
 <script>
-
 
 
     function bar(e) {

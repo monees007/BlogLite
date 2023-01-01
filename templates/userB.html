@@ -12,9 +12,11 @@
             left: 0;
             border-radius: inherit;
         }
-        .modal{
+
+        .modal {
             z-index: 1066 !important;
         }
+
         .modal-backdrop.show {
             z-index: 1065 !important;
         }
@@ -22,7 +24,7 @@
     <section class="h-100 gradient-custom-2">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-lg-9 col-xl-7">
+                <div class="col-md-12 col-lg-10 col-xl-8">
                     <div class="card">
                         <div class="rounded-top text-white d-flex flex-row"
                              style="background-color: #000; height:200px;">
@@ -30,15 +32,28 @@
                                 <img src="{{ info["profile_pic"] }}"
                                      alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                      style="width: 150px; z-index: 1">
+                                {% if rw %}
                                 <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
                                         data-bs-target="#edit_profile_modal" data-mdb-ripple-color="dark"
                                         style="z-index: 1;">
                                     Organise
                                 </button>
+                                {%  elif follower %}
+                                <button onclick="follow(this,'{{ info['email'] }}')" type="button" class="btn btn-outline-dark"  data-mdb-ripple-color="dark"
+                                        style="z-index: 1;">
+                                    Unfollow
+                                </button>
+                                {% else %}
+                                <button onclick="follow(this,'{{ info['email'] }}')" type="button" class="btn btn-outline-dark"
+                                        data-mdb-ripple-color="dark"
+                                        style="z-index: 1;">
+                                    Follow
+                                </button>
+                                {% endif %}
                             </div>
                             <div class="ms-3" style="margin-top: 130px;">
                                 <h5>{{ info['name'] }}</h5>
-                                <p>{{ info['username'] }}</p>
+                                <p id="current_username">{{ info['username'] }}</p>
                             </div>
                         </div>
                         <div class="p-4 text-black" style="background-color: #f8f9fa;">
@@ -47,13 +62,13 @@
                                     <p class="mb-1 h5">{{ info['posts'] or 0 }}</p>
                                     <p class="small text-muted mb-0">Entries</p>
                                 </div>
-                                <div class="px-3">
-                                    <p class="mb-1 h5">{{ info['followers'] or 0 }}</p>
+                                <div onclick="list_users('followers','{{ info['email'] }}' )" class="px-3">
+                                    <p class="mb-1 h5">{{ info['follower'] or 0 }}</p>
                                     <p class="small text-muted mb-0">Followers</p>
                                 </div>
-                                <div>
-                                    <p class="mb-1 h5">{{ info['followers'] or 0 }}</p>
-                                    <p class="small text-muted mb-0">Following</p>
+                                <div onclick="list_users('followings','{{ info['email'] }}' )">
+                                    <p class="mb-1 h5">{{ info['following'] or 0 }}</p>
+                                    <p class="small text-muted mb-0">Followings</p>
                                 </div>
                             </div>
                         </div>
@@ -62,8 +77,9 @@
                         <div class="card-body p-4 text-black">
                             <div class="mb-5">
                                 <div class="p-4" style="background-color: #f8f9fa;">
+                                    {% if info['bio'] %}
                                     <p class="font-italic mb-1">{{ info['bio'] | markdown }}</p>
-
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -89,7 +105,8 @@
                     <div class="card">
                         <div style="position: relative" class="card-body">
                             {% if p['status']=='archived' %}
-                                <div onclick="archive({{ p.id }})" class="masker text-light d-flex justify-content-center flex-column text-center">
+                                <div onclick="archive({{ p.id }})"
+                                     class="masker text-light d-flex justify-content-center flex-column text-center">
                                     <h2 class="bold">Archived</h2>
                                     <p class="m-0">Tap to Republish</p>
                                 </div>
@@ -175,11 +192,12 @@
 
 
     {% endfor %}
-    <div class="modal fade" id="edit_profile_modal" tabindex="-1" aria-labelledby="edit_profile_modalLabel" style="z-index: 1000"
+    <div class="modal fade" id="edit_profile_modal" tabindex="-1" aria-labelledby="edit_profile_modalLabel"
+         style="z-index: 1000"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="/account" method="POST">
+                <form >
                     <div class="modal-header">
                         <h5 class="modal-title" id="edit_profile_modalLabel">Edit Profile</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -207,35 +225,43 @@
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Name</label>
                                         <div class="col-sm-9">
-                                            <input type="text" value="{{ info["name"] }}" class="form-control"
-                                                   id="e-name" name="name">
+                                            <input type="text" value="{{ info["name"] }}" class="form_field form-control"
+                                                   id="e-name" name="name" required>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div id="username_inputfield" class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Username</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="username" value="{{ info["username"] }}" class="form-control" id="username">
+                                            <input onkeyup="validate_username('{{ info["username"] }}')" type="text"
+                                                   name="username" value="{{ info["username"] }}"
+                                                   class="form_field form-control .needs-validation" id="username_inputfield">
+                                            <div class="invalid-feedback">
+                                                Username not available.
+                                            </div>
                                         </div>
+
                                     </div>
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
                                         <div class="col-sm-9">
-                                            <input type="email" name="email" value="{{ info["email"] }}" class="form-control"
-                                                   id="E-email">
+                                            <input type="email" name="email" value="{{ info["email"] }}"
+                                                   class=" form-control "
+                                                   id="E-email"  readonly>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Bio</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" name="bio" id="E-bio"
-                                                      rows="3">{{ info["bio"] }}</textarea>
+                                            <textarea class="form_field form-control" name="bio" id="E-bio"
+                                                      rows="3" required>{{ info["bio"] }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <button type="button" class="btn btn-outline-dark" onclick="location.href='/cred'" data-mdb-ripple-color="dark"
-                                        style="z-index: 1;">
-                                    Get API Credentials
-                                </button>
+                                        <button type="button" class="btn btn-outline-dark"
+                                                onclick="location.href='/cred'" data-mdb-ripple-color="dark"
+                                                style="z-index: 1;">
+                                            Get API Credentials
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +270,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="reset" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <input type="submit" class="btn btn-primary">
+                        <div onclick="update_user()" class="btn btn-primary">Submit</div>
                     </div>
                 </form>
 

@@ -84,7 +84,7 @@ def callback():
     login_user(user, remember=True)
 
     # Send user back to homepage
-    return redirect(url_for("index"))
+    return redirect(url_for("current_profile"))
 
 
 def credentials():
@@ -105,16 +105,21 @@ def api_login(api_key, api_secret):
     if api_key and api_secret:
         db = model.get_db()
         objx = db.execute(f"SELECT * FROM credentials WHERE api_key = '{api_key}'").fetchone()
-        objy = objx["email"]
-        if pwd_context.verify(api_secret, objx["api_secret"]):
-            userDB = db.execute(f"SELECT * FROM user WHERE email = '{objy}'").fetchone()
+
+        if objx is not None and pwd_context.verify(api_secret, objx["api_secret"]):
+            userDB = db.execute(f"SELECT * FROM user WHERE email = '{objx['email']}'").fetchone()
             user = User(
                 mid=userDB["id"], name=userDB["name"], email=userDB["email"], profile_pic=["profile_pic"]
             )
             login_user(user, remember=True)
+            return True
+        else:
+            return False
 
 
-@login_required
+
+
 def logout():
-    logout_user()
+    if current_user.is_authenticated:
+        logout_user()
     return redirect(url_for("index"))

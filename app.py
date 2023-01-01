@@ -3,7 +3,9 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_mde import Mde
-from flask_misaka import Misaka
+# from flask_misaka import Misaka
+from flaskext.markdown import Markdown
+
 from flask_restful import Api
 
 from src import ends, routes, login
@@ -17,8 +19,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 api = Api(app)
 mde = Mde(app)
-Misaka(app)
-DATABASE = 'database/sqlite.db'
+Markdown(app)
+DATABASE = 'model/sqlite.db'
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['MDEDITOR_FILE_UPLOADER'] = os.path.join(basedir,
@@ -32,7 +34,7 @@ api.add_resource(ends.Comment, "/api/comment")
 app.add_url_rule('/', view_func=routes.index)
 app.add_url_rule('/feed', view_func=routes.feed)
 app.add_url_rule('/discover', view_func=routes.search)
-app.add_url_rule('/user/<uid>', view_func=routes.profile)
+app.add_url_rule('/user/<username>', view_func=routes.profile)
 app.add_url_rule('/user', view_func=routes.current_profile)
 
 app.add_url_rule('/follow/<user>', view_func=routes.follow)

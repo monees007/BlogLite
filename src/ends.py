@@ -1,4 +1,4 @@
-from flask import Response, request
+from flask import Response, request, jsonify
 from flask_restful import Resource
 
 from src.controller import *
@@ -19,6 +19,9 @@ responses = {
     403: {
         "errorCode": "403",
         "error": "Not Authorized. Are you authenticated?"},
+    4010: {
+        "errorCode": "401",
+        "error": "Not Authorized. Invalid Credentials"},
     9: {
         "errorCode": "9",
         "error": "Token expired"
@@ -104,6 +107,7 @@ class Entry(Resource):
         return Response(func, 123)
 
 
+
 class User(Resource):
     def get(self):
         uid = request.args.get('username')
@@ -128,24 +132,25 @@ class User(Resource):
         #     user["name"] = name
         user = edit_profile(name, email, username, bio)
 
-        return user
+        return user ,user
 
     def post(self):
-        api_key = request.args.get("api_key")
-        api_secret = request.args.get("api_secret")
-        api_login(api_key, api_secret)
-        print("Success")
-        return "Success", 200
-
-    def patch(self):
-        username = request.args.get()
-        return
+        try:
+            api_key = request.args.get("api_key")
+            api_secret = request.args.get("api_secret")
+            if not api_login(api_key, api_secret):
+                return responses[4010],401
+            print("Success")
+            return "Success", 200
+        except Exception:
+            return responses[401]
 
     @staticmethod
     def patch():
         email = request.args.get('email')
+        username = request.args.get('username')
         func = request.args.get('func')
-        if email and func:
+        if True or email and func:
             if func == 'followers':
                 res = followers(email=email)
                 return responses[403] if res == 406 else res
@@ -153,10 +158,17 @@ class User(Resource):
                 res = followings(email=email)
                 return responses[403] if res == 406 else res
             elif func == "follow":
-                res = follow(email)
-                return responses[403] if res == 406 else res
+                f = follow(email)
+                return Response(f, status=f)
             elif func == "search":
-                pass
+                res = search(request.args.get('term'))
+                return responses[403] if res == 406 else res
+            elif func == "is_available":
+                res = user_available(username)
+                return responses[403] if res == 406 else res
+            elif func == "is_following":
+                res = is_following(email)
+                return responses[403] if res == 406 else res
         return responses[401]
 
 class Comment(Resource):

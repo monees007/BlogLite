@@ -79,32 +79,83 @@ def retrive_a_post(post_id):
 
 def follow(email):
     db = get_db()
+    if not db.execute(f"SELECT * FROM follow where following='{email}' and follower='{current_user.email}'").fetchone():
+        try:
+            db.execute(f"insert into follow (follower, following) values ('{current_user.email}','{email}');")
+            db.commit()
+            return 200
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406
+    else:
+        try:
+            db.execute(f"delete from follow where following='{email}' and follower='{current_user.email}'")
+            db.commit()
+            return 417
+        except sqlite3.Error as err:
+            db.rollback()
+            error_printer(err)
+            return 406
 
-    try:
-        db.execute(f"insert into follow (follower, following) values ('{current_user.email}','{email}');")
-        db.commit()
-    except sqlite3.Error as err:
-        db.rollback()
-        error_printer(err)
-        return 406
 
 def followings(email):
     db = get_db()
     try:
-        data = db.cursor().execute(f"SELECT profile_pic, username, name, email from user where user.email in (select following from follow where follower='{email}');").fetchall()
+        data = db.cursor().execute(
+            f"SELECT profile_pic, username, name, email from user where user.email in (select following from follow where follower='{email}');").fetchall()
     except sqlite3.Error as err:
         error_printer(err)
         return 406
     return data
 
+
 def followers(email):
     db = get_db()
     try:
-        data = db.cursor().execute(f"SELECT profile_pic, username, name, email from user where user.email in (select follower from follow where following='{email}');").fetchall()
+        data = db.cursor().execute(
+            f"SELECT profile_pic, username, name, email from user where user.email in (select follower from follow where following='{email}');").fetchall()
     except sqlite3.Error as err:
         error_printer(err)
         return 406
     return data
+
+
+def search(term):
+    term += '%'
+    db = get_db()
+    try:
+        data = db.cursor().execute(
+            f"select * from users where username like '{term}' or name like '{term}' or email like '{term}';").fetchall()
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
+    return data
+
+
+def is_following(email):
+    db = get_db()
+    try:
+        info = db.execute(
+            f"select * from follow where following ='{email}' and follower='{current_user.email}' ;").fetchone()
+        return bool(info)
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
+    except TypeError:
+        return 401
+
+
+def user_available(username):
+    db = get_db()
+    try:
+        data = db.cursor().execute(
+            f"SELECT username from user where user.username='{username}';").fetchall()
+    except sqlite3.Error as err:
+        error_printer(err)
+        return 406
+    return data
+
 
 def cred(cred):
     db = get_db()
@@ -141,17 +192,12 @@ def archive(pid):
 def edit_profile(name, email, username, bio):
     db = get_db()
     try:
-        post = data = db.cursor().execute(f'''
-            
-            update user
-            set 
-                name = coalesce ('{name}',name),
-                email = coalesce ('{email}',email),
-                username = coalesce ('{current_user.username}',username),
-                bio = coalesce ('{bio}',bio)
-           where
-              id = '{username}' OR username= '{username}' and coalesce('{name}','{email}','{username}','{bio}') is not null''')
-
+        if not db.cursor().execute(
+                f"SELECT username from user where user.username='{username}';").fetchall():
+            db.cursor().execute(
+                f"update user set name='{name}', username='{username}', bio='{bio}' where email='{current_user.email}'")
+        else:
+            return 405
         db.commit()
         return 200
     except sqlite3.Error as err:

@@ -1,4 +1,4 @@
-function hide_comments() {
+function hide_all_comments() {
     let comms = document.querySelectorAll("#commentx");
     comms.forEach(function (d, i) {
         d.style.display = "none";
@@ -6,7 +6,7 @@ function hide_comments() {
 }
 
 async function comments_hider(el, pid) {
-    hide_comments()
+    hide_all_comments()
     let count = 1;
     let comment_elements = el.parentNode.parentNode.parentNode.querySelector('#commentx')
 
@@ -50,7 +50,7 @@ async function comments_hider(el, pid) {
                             </div>
                             <div class="float-end mt-2 pt-1">
                                 <button type="button" onclick="post_comment(this,'${pid}')" class="btn btn-primary btn-sm">Post comment</button>
-                                <button type="button" onclick="hide_comments()" class="btn btn-outline-primary btn-sm">Cancel</button>
+                                <button type="button" onclick="hide_all_comments()" class="btn btn-outline-primary btn-sm">Cancel</button>
                             </div>
                         </div>`
     // #show comments section
@@ -131,38 +131,138 @@ async function delete_post(pid) {
     }
 }
 
-async function followers(func, email) {
+async function list_users(func, email) {
     let children = document.getElementById('user_list_children');
     let container = document.getElementById('userlist');
     let label = document.getElementById('userlistLabel')
     let loaded = '';
-    let follower_list = await fetch('http://127.0.0.1:5000/api/user?func='+func+'&email=' + email, {method: 'GET'}).then((response) => response.json()).then((data) => data)
-    for (f in follower_list) {
+    let follower_list = await fetch('http://127.0.0.1:5000/api/user?func=' + func + '&email=' + email, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    for (c in follower_list) {
+        let is_Following = await fetch('http://127.0.0.1:5000/api/user?func=' + 'is_following' + '&email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
+            <div class="me-2 d-flex justify-content-between align-items-center">
             <div class="d-flex flex-start align-items-center">
                                 <img class="rounded-circle shadow-1-strong me-3"
-                                     src="${c['profile_pic']}"
+                                     src="${follower_list[c]['profile_pic']}"
                                      alt="avatar" width="60"
                                      height="60"/>
                                 <div>
-                                    ${follower_list}
-                                    <h6 onclick="location.href='/user/{{ p.username }}'"
-                                        class="fw-bold text-primary mb-1">${c['name']}</h6>
+                                  
+                                    <h6 onclick="location.href='/user/${follower_list[c]['username']}'" class="fw-bold text-primary mb-1">${follower_list[c]['name']}</h6>
                                     <p class="text-muted small mb-0">
-                                        ${c['username']} - ${c['email']}
+                                        ${follower_list[c]['username']} - ${follower_list[c]['email']}
                                     </p>
-                                </div>
+                                </div></div>
+                                <div onclick="follow(this,'${follower_list[c]['email']}')" class="btn btn-secondary ">${is_Following ? "Unfollow" : "Follow"}</div>
+                                
                             </div>
+                            
          `
+        if (c + 1 < follower_list.length) {
+            loaded += `<hr>`;
+        }
     }
     children.innerHTML = loaded;
-    if (func == 'followers'){
-        label.textContent='Followers';
-    }else if (func == 'followings'){
-        label.textContent='Following';
+    if (func == 'followers') {
+        label.textContent = 'Followers';
+    } else if (func == 'followings') {
+        label.textContent = 'Followings';
     }
-    const modal =  new bootstrap.Modal(container)
+    const modal = new bootstrap.Modal(container)
     modal.show()
 
 
+}
+
+
+async function search_users() {
+    let children = document.getElementById('search_list_children');
+    let term = document.getElementById('search_term').value
+    let loaded = ``;
+
+    const users_list = await fetch('http://127.0.0.1:5000/api/user?func=search&term=' + term, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    for (c in users_list) {
+        let is_Following = await fetch('http://127.0.0.1:5000/api/user?func=' + 'is_following' + '&email=' + users_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+        loaded += `
+            <div class="me-2 d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-start align-items-center">
+                                <img class="rounded-circle shadow-1-strong me-3"
+                                     src="${users_list[c]['profile_pic']}"
+                                     alt="avatar" width="60"
+                                     height="60"/>
+                                <div>
+                                  
+                                    <h6 onclick="location.href='/user/${users_list[c]['username']}'" class="fw-bold text-primary mb-1">${users_list[c]['name']}</h6>
+                                    <p class="text-muted small mb-0">
+                                        ${users_list[c]['username']} - ${users_list[c]['email']}
+                                    </p>
+                                </div></div>
+                                <div onclick="follow(this,'${users_list[c]['email']}')" class="btn btn-secondary ">${is_Following ? "Unfollow" : "Follow"}</div>
+                                
+                            </div>
+                            
+         `
+        if (c  < users_list.length-1) {
+            loaded += `<hr>`;
+        }
+    }
+    children.innerHTML = loaded;
+    if (!term) {
+        children.innerHTML = loaded;
+    }
+    // children.insertAdjacentHTML( 'beforeend', loaded );
+    console.log(children)
+}
+
+async function is_user(username) {
+    let req = await fetch("http://127.0.0.1:5000/api/user?func=is_available&username=" + username, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    return !!req[0];
+}
+
+async function validate_username(original) {
+
+    let parent = document.querySelector('#username_inputfield')
+    const input = parent.children[1].children[0]
+    const username = input.value
+    const test = await is_user(username).then((res) => res).then(res => res)
+    const label = parent.children[0]
+    if (username && (username === original || !test)) {
+        input.classList.remove('is-invalid')
+        label.classList.remove('validationError')
+        input.classList.remove('text-danger')
+        input.classList.add('is-valid')
+        label.classList.add('validationSuccess')
+        input.classList.add('text-success')
+    } else {
+        input.classList.remove('is-valid')
+        label.classList.remove('validationSuccess')
+        input.classList.remove('text-success')
+        input.classList.add('is-invalid')
+        label.classList.add('validationError')
+        input.classList.add('text-danger')
+    }
+}
+
+async function update_user() {
+    const forms = document.querySelectorAll('.form_field')
+    const name_ = forms[0].value
+    const username = forms[1].value
+    const bio = forms[2].value
+
+    let response = await fetch(`http://127.0.0.1:5000/api/user?username=${username}&bio=${bio}&name=${name_}`, {method: 'PUT'})
+    if (response.status === 200) {
+        location.reload()
+    }else if (response.status === 405){
+        console.log(document.querySelector('#current_username').textContent)
+    }
+
+}
+
+async function follow(element, email){
+    req = await fetch("http://127.0.0.1:5000/api/user?func=follow&email=" + email, {method: 'PATCH'})
+    if (req.status === 200) {
+        element.textContent = "Unfollow";
+    } else if (req.status === 417) {
+        element.textContent = "Follow";
+    }
 }
