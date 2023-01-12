@@ -1,12 +1,13 @@
 import json
 import random
 import string
+from functools import wraps
 from io import BytesIO
 
 import requests
 from passlib.apps import custom_app_context as pwd_context
 from flask import request, redirect, url_for, Response
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_user, logout_user, current_user
 from oauthlib.oauth2 import WebApplicationClient
 from werkzeug.wsgi import FileWrapper
 
@@ -14,9 +15,10 @@ SESSION_PROTECTION = None
 # session_protected=None
 
 import src.controller
-from src import model
+from model import model
 from src.config import *
 from src.user import User
+from controller.users import cred as credential_provider
 
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
@@ -48,13 +50,10 @@ def callback():
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
-    print(body)
-    print(token_response.json()["access_token"])
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
 
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
-    print("User info endpoint:",userinfo_endpoint)
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
 
@@ -93,7 +92,7 @@ def credentials():
             random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(22)),
             'api_secret': ''.join(
                 random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(25))}
-        if src.controller.cred(cred) != 406:
+        if credential_provider(cred) != 406:
             b = FileWrapper(BytesIO(json.dumps(cred, indent=4).encode('utf-8')))
             header = {'Content-Disposition': 'attachment; filename="credentials.json"'}
             return Response(b, mimetype="text/plain", direct_passthrough=True, headers=header)
@@ -117,9 +116,49 @@ def api_login(api_key, api_secret):
             return False
 
 
-
-
 def logout():
     if current_user.is_authenticated:
         logout_user()
     return redirect(url_for("index"))
+
+
+
+def auth_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # if current user is logged in through AUTH2.0
+        if current_user.is_authenticated:
+            return f(*args, **kwargs)
+
+        # Alternate authentication method
+        api_key = ''
+        api_secret = ''
+        if 'api_key' in request.headers:
+            api_key = request.headers['api_key']
+        if 'api_secret' in request.headers:
+            api_secret = request.headers['api_secret']
+        # return 401 if token is not passed
+        if not (api_secret and api_key):
+            return {'message': 'Unauthorized'}, 401
+        user = ''
+        try:
+            db = model.get_db()
+            objx = db.execute(f"SELECT * FROM credentials WHERE api_key = '{api_key}'").fetchone()
+            if objx is not None and pwd_context.verify(api_secret, objx["api_secret"]):
+                userDB = db.execute(f"SELECT * FROM user WHERE email = '{objx['email']}'").fetchone()
+                user = User(
+                    mid=userDB["id"], name=userDB["name"], email=userDB["email"], profile_pic=["profile_pic"]
+                )
+            else:
+                return {
+                    'message': 'Credentials invalid !!'
+                }, 401
+        except:
+            return {
+                'message': 'Credentials invalid !!'
+            }, 401
+        login_user(user, remember=False)
+        # print(current_user.email)
+        return f(*args, **kwargs)
+
+    return decorated

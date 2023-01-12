@@ -14,12 +14,12 @@ CREATE VIEW commentr as
 select cid,
        user                                                      as email,
        post                                                      as pid,
-
+       timestamp  as sort,
        substr('JanFebMarAprMayJunJulAugSepOctNovDec', 1 + 3 * strftime('%m', timestamp), -3) ||
        strftime(' %d, %Y', timestamp)                            as timestamp,
        content,
-       (select profile_pic from users where users.email = email) as profile_pic,
-       (select username from users where users.email = email) as username
+       (select profile_pic from users where users.email = comments.user) as profile_pic,
+       (select username from users where users.email = comments.user) as username
 
 from comments
 ORDER BY timestamp;
@@ -34,7 +34,6 @@ select id,
        content as content,
         substr('JanFebMarAprMayJunJulAugSepOctNovDec', 1 + 3*strftime('%m', date), -3) || strftime(' %d, %Y',date) as date,
        (select count(post) from likes where post=id) as likes,
-       (select count(post) from likes where post=id and user=post.user) as liked,
        (select count(post) from shares where post=id and user=post.user) as shared,
        (select count(post) from comments where post=id) as comments,
        (select count(post) from shares where post=id) as shares

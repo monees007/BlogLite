@@ -13,9 +13,15 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 
-    <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/entry.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
     <style>
+        body {
+            position: relative;
+        }
+
         .wmd-prompt-dialog {
             z-index: 2000 !important;
         }
@@ -24,38 +30,12 @@
             z-index: 1999 !important;
         }
 
-        {#.modal:nth-of-type(even) {#}
-        {#    z-index: 1062 !important;#}
-        {
-        #}#}
-        {##}
-        {#.modal-backdrop.show:nth-of-type(even) {#}
-        {#    z-index: 999 !important;#}
-        {
-        #}#}
-
 
         .wmd-button > span {
             background-image: url('https://cdn.sstatic.net/Img/unified/wmd-buttons.svg?v=c26278fc22d9') !important;
         }
 
-        .fab {
-            border-radius: 360px;
-            background: palevioletred;
-            width: 58px;
-            height: 58px;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-
-            border: solid 4px;
-        }
-
-        .body {
+        body {
             background-image: url(/static/img/site-background-image.png);
             background-repeat: repeat;
             background-color: white;
@@ -65,80 +45,133 @@
             color: #ff0000;
             font-variation-settings: 'FILL' 1;
         }
+
+        .entry img {
+            max-width: -webkit-fill-available;
+        }
+
+        #shadow {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+        }
+
+        #frame2 {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            display: none;
+            justify-content: center;
+            z-index: 1501;
+        }
+
+        @media (max-width: 480px) {
+            #create_post {
+                height: 100%;
+                width: 100%;
+                display: flex;
+            }
+        }
     </style>
 
     {{ mde.css }}
-    {% block css %}
-    {% endblock %}
+
 </head>
 <body>
 <nav class="navbar fixed-top navbar-dark bg-dark">
     <div class="container-fluid ">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30"
                  class="d-inline-block align-top" alt="">
-            Bootstrap
+            BlogLite
         </a>
         <div>
-        <div data-bs-toggle="modal"
-             data-bs-target="#usersearch" class="btn btn-dark">
-            <div style="vertical-align: bottom" class="material-symbols-outlined">search</div>
-        </div>
-        {% if show_login %}
-            <div onclick="location.href='/login'" class="btn btn-dark">
-                <div style="vertical-align: bottom" class="material-symbols-outlined">login</div>
-                Login
+            <div data-bs-toggle="modal"
+                 data-bs-target="#usersearch" class="btn btn-dark">
+                <div style="vertical-align: bottom" class="material-symbols-outlined">search</div>
             </div>
+            {% if show_login %}
+                <div onclick="location.href='/login'" class="btn btn-dark">
+                    <div style="vertical-align: bottom" class="material-symbols-outlined">login</div>
+                    Login
+                </div>
 
-        {% else %}
-            <div onclick="location.href='/logout'" class="btn btn-dark material-symbols-outlined">logout</div>
-        {% endif %}
+            {% else %}
+                <div onclick="location.href='/logout'" class="btn btn-dark material-symbols-outlined">logout</div>
+            {% endif %}
         </div>
     </div>
 </nav>
-<div class="container h3  ">
-    Trending
-</div>
+{{ mde.js }}
 
 {% block content %}
 {% endblock %}
 
-{{ mde.js }}
 
-<div class="modal fade " data-bs-backdrop="false" id="newPost" tabindex="-1" aria-labelledby="newPostLabel"
-     aria-hidden="true">
-    <div data-backdrop="false" class="modal-dialog modal-fullscreen-lg-down modal-xl">
-        <div class="modal-content">
-            <form action="/create_post" method="POST">
 
-                <div class="modal-header">
-                    <h5 class="modal-title col-10" id="newPostLabel">Create Post</h5>
+<div id="shadow"></div>
+<div id="frame2" style="display: none">
+    <div style="z-index: 1501" id="create_post" class="card position-absolute top-50 start-50 translate-middle">
+
+        <div class="card-header  text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="" id="newPostLabel">Create Post</h5>
+                </div>
+                <div>
                     <button type="button"
                             onclick="window.open('https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')"
                             class="btn"><span style="vertical-align: bottom"
-                                              class="material-symbols-outlined">help</span></button>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              class="material-symbols-outlined">help</span>
+                    </button>
+                    <button type="button"
+                            onclick="showCreatePost('none','c')"
+                            class="btn"><span style="vertical-align: bottom"
+                                              class="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-                <div class="modal-body">
-
-                    {{ form.csrf_token }}
+            </div>
+        </div>
+        <div class="card-body">
+            <div>
+                <input style="display: none" id="pid" value="-1">
+                <input style="margin-top: 15px" class=" form_field form-control" type="file"
+                       id="ImgFile" name="post_pic" onchange="uploadFile(this)">
+                <div class="">
                     <div class="row" style="--bs-columns: 4; --bs-gap: 0.5rem;">
                         <div class="col" style="min-width: 425px">{{ form.editor }}</div>
-                        <div class="col" style="min-width: 425px">{{ mde.preview }}</div>
+                        <div class="col mt-5"
+                             style="min-width: 405px;height: 305px;overflow: auto scroll;">{{ mde.preview }}</div>
                     </div>
-                    {{ mde.preview }}
+
 
                 </div>
-                <div class="modal-footer">
-                    <input type="reset" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <input type="submit" class="btn btn-primary">
+                <div class="mt-2 d-flex justify-content-end">
+
+                    <input type="reset" class="btn me-2 btn-secondary" data-bs-dismiss="modal">
+                    <button style="display: none" onclick="edit_post(this)" id="edit-btn" class="btn me-2 btn-primary">
+                        Update Changes
+                    </button>
+                    <button style="display: none" onclick="create_post(this)" id="sb-btn" class="btn me-2 btn-primary">
+                        Save
+                    </button>
+
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+
 </div>
 
 
+{# Modal to show List of user who liked/shared #}
 <div class="modal fade " data-bs-backdrop="true" id="userlist" tabindex="-1" aria-labelledby="Users"
      aria-hidden="true">
 
@@ -157,15 +190,15 @@
     </div>
 </div>
 
-
+{# Modal to search for user #}
 <div class="modal fade " data-bs-backdrop="true" id="usersearch" tabindex="-1" aria-labelledby="Users"
      aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-around">
-                    <input onkeyup="search_users()" type="text" class="form-control" id="search_term"
-                           placeholder="Name, Username or Email">
+                <input onkeyup="search_users()" type="text" class="form-control" id="search_term"
+                       placeholder="Name, Username or Email">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
 
@@ -175,6 +208,8 @@
         </div>
     </div>
 </div>
+
+{# Bottom Navigation Bar #}
 <nav class="navbar fixed-bottom nav-pills nav-justified navbar-dark bg-light">
     <div class="container-fluid">
 
@@ -183,12 +218,15 @@
         <a class="nav-item nav-link me-2" id="user" href="/user">Profile</a>
         <a style="display:none;" class="nav-item nav-link me-2" href="#">Notifications</a>
 
-        <div style="background: palevioletred;border: none;" class="btn btn-primary" data-bs-toggle="modal"
-             data-bs-target="#newPost"><span
+        {#        <div style="background: palevioletred;border: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newPost"><span#}
+        <div style="background: palevioletred;border: none;" class="btn btn-primary"
+             onclick="showCreatePost('flex','c')"><span
                 class="material-symbols-outlined">add</span></div>
 
     </div>
 </nav>
+
+
 <script>
 
 
@@ -203,20 +241,13 @@
         let url = window.location.href;
 
         if (url.search('feed') > -1) {
-            console.log(document.getElementById("feed"))
+            bar(document.getElementById("feed"))
         } else if (url.search('discover') > -1) {
             bar(document.getElementById("discover"))
         } else if (url.search('user') > -1) {
             bar(document.getElementById("user"))
         }
 
-        let comms = document.querySelectorAll(".likeb");
-        comms.forEach(function (d, i) {
-            if (d.children[1].textContent == 0) {
-                d.children[1].textContent = ''
-                d.children[2].textContent = ''
-            }
-        });
     });
 
 

@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 
-import src.model
+import model.model
 
 
 class User(UserMixin):
@@ -13,7 +13,7 @@ class User(UserMixin):
 
     @staticmethod
     def get(user_id):
-        db = src.model.get_db()
+        db = model.model.get_db()
         # print(user_id)
         user = db.execute(
             f"SELECT * FROM user WHERE id = '{user_id}'"
@@ -30,10 +30,9 @@ class User(UserMixin):
         )
         return user
 
-
     @staticmethod
     def get_email(user_id):
-        db = src.model.get_db()
+        db = model.model.get_db()
         # print(user_id)
         user = db.execute(
             f"SELECT * FROM user WHERE email = '{user_id}'"
@@ -52,34 +51,25 @@ class User(UserMixin):
 
     @staticmethod
     def create(mid, name, email, profile_pic, password=None):
-        db = src.model.get_db()
+        db = model.model.get_db()
         db.execute(
             "Insert into user values(?,?,?,?,?,?,?,?)",
-            (mid, name, email, profile_pic,"","","",email.split('@')[0])
+            (mid, name, email, profile_pic, "", "", "", email.split('@')[0])
         )
         db.commit()
 
     @staticmethod
     def get_uname(uid):
-        db = src.model.get_db()
+        db = model.model.get_db()
         # print(user_id)
         user = db.execute(
             f"SELECT * FROM users WHERE username = '{uid}'"
-        ).fetchall()[0]
-        # user = db.cursor().execute('select * from user where id =(?)', (user_id,).fetchone())
-        if not user:
-            return None
+        ).fetchone()
+        return user or None
 
-        return user
 
 def get_uname(uid):
-    db = src.model.get_db()
-    # print(user_id)
-    user = db.execute(
+    db = model.model.get_db()
+    return db.execute(
         f"SELECT * FROM users WHERE username = '{uid}'"
-    ).fetchall()
-    # user = db.cursor().execute('select * from user where id =(?)', (user_id,).fetchone())
-    if not len(user):
-        return None
-
-    return user[0]
+    ).fetchone()

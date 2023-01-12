@@ -1,0 +1,778 @@
+openapi: 3.0.3
+info:
+  title: BlogLite - OpenAPI 3.0
+  description: |-
+    MarkDown blogging site.
+
+    
+    
+
+  contact:
+    email: 21f1000263@student.onlinedegree.iitm.ac.in
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+
+servers:
+  - url: http://127.0.0.1:5000/api/
+tags:
+  - name: Entry
+    description: Blog with image written in Markdown
+
+  - name: Comment
+    description: Response written to an Entry.
+
+  - name: User
+    description: Operations about user
+    
+  - name: Interaction
+    description: Interact with entries.
+paths:
+  /entry:
+    get:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Entry
+        - Retrieve Entries
+      summary: Get an entry by post ID.
+      operationId: retrieve_a_post
+      parameters:
+          - in: query
+            description: Required for retrieving exact entry.
+            name: pid
+            schema: 
+             type: integer
+            
+      responses:
+        '200':
+          description: An entry with corresponding informations.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+
+    post:
+      security:
+        - api_key: []
+          api_secret: []
+      tags: 
+        - Entry
+      summary: Create a new entry.
+      description: This endpoint can be used to create a new entry.
+      operationId: create_entry
+      parameters:
+        - in: query
+          name: content
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Image file name
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+        '401':
+          description: Unauthorized Access Denied.
+    delete:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Entry
+      summary: Delete an entry by its ID.
+      operationId: delete_entry
+      parameters:
+        - in: query
+          name: pid
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Entry deleted successfully.
+        '401':
+          description: Unauthorized Access Denied. 
+        '404':
+          description: No entry with that id found.
+    put:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Entry 
+      summary: Update an entry.
+      operationId: update_entry
+      parameters:
+        - in: query
+          name: pid
+          schema:
+            type: integer
+        - in: query
+          name: content
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Entry updated successfully.
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+
+  /entry/upload:
+    post:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Entry
+      summary: Upload image file 
+      operationId: upload
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Image file name
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+        '401':
+          description: Unauthorized Access Denied.
+
+
+  /entry/username:
+    get:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Retrieve Entries
+      summary: Get an entry by post ID.
+      description: Only one parameter is expected at a time.
+      operationId: users_all_post
+      parameters:
+          - in: query
+            required: true
+            name: username
+            schema:
+              type: string
+            
+      responses:
+        '200':
+          description: An entry with corresponding informations.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+        '404':
+          description: No username with that username found.
+
+  /entry/feed:
+    get:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Retrieve Entries
+      summary: Get feeds for current user.
+      
+      
+      operationId: feeds
+            
+      responses:
+        '200':
+          description: An entry with corresponding informations.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+        
+
+  /entry/trending:
+    get:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Retrieve Entries
+      summary: Get trending entries.
+      operationId: trending
+      responses:
+        '200':
+          description: An entry with corresponding informations.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Entry'
+      
+  /entry/archive:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      summary: Archive a post to unpublished it.
+      operationId: archive
+      parameters:
+        - in: query
+          name: pid
+          schema: 
+            type: integer
+
+      responses:
+        '200':
+          description: Entry archived successfully.
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+
+        
+
+  /entry/like:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      summary: Un/Like a entry.
+      operationId: like
+      parameters:
+        - in: query
+          name: pid
+          schema: 
+            type: integer
+
+      responses:
+        '200':
+          description: Entry like successfully.
+        '417':
+          description: Entry unliked successfully.
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+
+  /entry/is_liked:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      parameters:
+        - in: query
+          name: pid
+          schema:
+            type: integer
+      summary: Is entry liked by current user.
+      operationId: liked
+      responses:
+        '200':
+          description: Entry is liked.
+        '417':
+          description: Entry is not liked.
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+
+  /entry/share:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      summary: Share a entry on current profile.
+      operationId: share
+      parameters:
+        - in: query
+          name: pid
+          schema: 
+            type: integer
+
+      responses:
+        '200':
+          description: Entry like successfully.
+        '417':
+          description: Entry unliked successfully.
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+        
+  /entry/likes:
+    patch:
+      tags:
+        - Stats
+      summary: Likes count on an entry.
+      operationId: count_likes
+      parameters:
+        - in: query
+          name: pid
+          schema: 
+            type: integer
+
+      responses:
+        '200':
+          description: Likes count on given entry.
+          content:
+            text/plain:
+              schema: 
+                type: integer
+      
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+  
+  /entry/shares:
+    patch:
+      tags:
+        - Stats
+      summary: Shares count on an entry.
+      operationId: count_shares
+      parameters:
+        - in: query
+          name: pid
+          schema: 
+            type: integer
+
+      responses:
+        '200':
+          description: Shares count on given entry.
+          content:
+            text/plain:
+              schema: 
+                type: integer
+      
+        '401':
+          description: Unauthorized Access Denied.
+        '404':
+          description: No entry with that id found.
+          
+
+  
+  
+  /comment:
+    get:
+      tags:
+        - Comment
+      summary: Retrieve all comments of an entry.
+      operationId: get_comments
+      parameters:
+        - in : query
+          name: pid
+          description: Id of the entry.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: All comments of given Entry Id
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: Entry not found.
+        '401':
+          description: Unauthorized Access Denied.
+    post:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Comment
+      summary: Create an comment.
+      operationId: create_comment
+      parameters:
+        - in: query
+          name: pid
+          description: Entry ID
+          schema:
+            type: integer
+        - in: query
+          name: content
+          description: new comment body.
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: Comment created successfully.
+        '401':
+          description: Unauthorized Access Denied.
+
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Comment
+      summary: Update an comment.
+      operationId: update_comment
+      parameters:
+        - in: query
+          name: cid
+          description: Comment ID
+          schema:
+            type: integer
+        - in: query
+          name: content
+          description: new comment body.
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: Comment updated successfully.
+        '404':
+          description: Comment not found.
+        '401':
+          description: Unauthorized Access Denied.
+    
+    delete:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Comment
+      summary: Delete an comment
+      operationId: delete_comment
+      parameters:
+        - in: query
+          name: cid
+          description: Comment ID
+          schema:
+            type: integer
+      responses:
+        '200': 
+          description: Comment deleted successfully.
+        '404':
+          description: Comment not found.
+        '401':
+          description: Unauthorized Access Denied.
+        
+
+  /user:
+    get:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - User
+      summary: Retrieve profile of a user.
+      operationId: getUser
+      parameters:
+        - in: query
+          name: username
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Profile of user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          description: User not found.
+    put:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - User
+      summary: Update profile of a user
+      parameters:
+        - in : query
+          name: username
+          schema:
+            type: string
+        - in: query
+          name: bio
+          schema: 
+            type: string
+        - in: query
+          name: name
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200': 
+          description: User updated successfully.
+        '404':
+          description: User not found.
+        '401':
+          description: Unauthorized Access Denied.
+        
+    delete:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - User
+      summary: Retrieve profile of a user.
+      operationId: deleteUser
+      parameters:
+        - in: query
+          name: username
+          schema: 
+            type: string
+      responses:
+        '200': 
+          description: User deleted successfully.
+        '404':
+          description: User not found.
+        '401':
+          description: Unauthorized Access Denied.
+
+  /user/followings:
+    patch:
+      tags:
+        - Stats
+      summary: Retrieve List of Followings
+      operationId: followings
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Profile of user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+            description: User not found
+
+  /user/followers:
+    patch:
+      tags:
+        - Stats
+      summary: Retrieve List of Followers.
+      operationId: followers
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Profile of user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+            description: User not found
+
+  /user/follow:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      summary: (Un)follow a user
+      operationId: follow
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Profile of user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '401':
+            description: User not found
+
+  /user/search:
+    patch:
+      security:
+        - api_key: []
+          api_secret: []
+      tags:
+        - Interaction
+      summary: Search a user
+      operationId: search
+      parameters:
+        - in: query
+          name: term
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '401':
+            description: User not found
+
+  /user/is_available:
+    patch:
+      tags:
+        - Stats
+      summary: Check that username is available or not.
+      operationId: is_available
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Username is available
+        
+        '417':
+            description: Username is not available
+ 
+  
+  /user/is_following:
+    patch:
+      tags:
+        - Stats
+      summary: Check if user is following current_user or not.
+      operationId: is_following
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Username is available
+        
+        '417':
+            description: Username is not available
+
+  
+            
+
+      
+  
+components:
+  schemas:
+    Entry:
+      type: object
+      properties:
+        comments:
+          type: integer
+          format: int64
+          example: 4
+        content:
+          type: string
+        date:
+          type: string
+        email:
+          type: string
+        id:
+          type: integer
+        liked:
+          type: integer
+        likes:
+          type: integer
+        name:
+          type: string
+        profile_pic: 
+          type: string
+        shared:
+          type: integer
+        shares:
+          type: integer
+        status:
+          type: string
+        timestamp:
+          type: string
+        username:
+          type: string
+        
+    Comment:
+      type: object
+      properties:
+        cid:
+          type: integer
+        email:
+          type: string
+        pid: 
+          type: integer
+        timestamp:
+          type: string
+        content:
+          type: string
+        profile_pic:
+          type: string
+        username:
+          type: string
+
+    user:
+      type: object
+      properties:
+        backdrop:
+          type: string
+        bio:
+          type: string
+        email:
+          type: string
+        follower:
+          type: integer
+        following:
+          type: integer
+        name:
+          type: string
+        posts: 
+          type: integer
+        profile_pic:
+          type: string
+        username:
+          type: string
+        
+    Users:
+      type: object
+      properties:
+        profile_pic:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+
+   
+  
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+    api_secret:
+      type: apiKey
+      name: api_secret
+      in: header

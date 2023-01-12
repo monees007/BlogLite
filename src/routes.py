@@ -3,6 +3,14 @@ from flask_login import current_user
 
 from src import controller, views
 from src.controller import MdeForm
+from controller.comments import *
+from controller.entries import *
+from controller.users import *
+from flask import render_template_string, url_for, redirect, Response
+from werkzeug.wsgi import FileWrapper
+from io import BytesIO
+import json
+from src.user import User
 
 
 def user(uid=None):
@@ -14,7 +22,7 @@ def user(uid=None):
         if current_user.is_authenticated and current_user.username == uid:
             rwv = True
 
-        elif current_user.is_authenticated and views.follows(uid):
+        elif current_user.is_authenticated and follows(uid):
             rw = False
             follower = True
         else:
@@ -39,8 +47,8 @@ def add_post():
     form = MdeForm()
     if request.method == "POST":
         content = form.editor.data
-        user = current_user.email
-        code = controller.create_post(user, content)
+        user_ = current_user.email
+        code = create_post(user_, content)
 
     return current_profile()
 
@@ -48,14 +56,14 @@ def add_post():
 def post_delete(mid):
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
-    return redirect(request.url, controller.delete_post(mid))
+    return redirect(request.url, delete_post(mid))
 
 
 def post_update(mid, content):
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
     if request.method == "PUT":
-        return redirect(request.url, controller.update_post(mid, content))
+        return redirect(request.url, update_post(mid, content))
     else:
         return redirect(request.url, 400)
 
@@ -63,11 +71,12 @@ def post_update(mid, content):
 def search():
     form = MdeForm()
     data = views.top_posts()
+    cu = current_user.email if current_user.is_authenticated else False
     if not current_user.is_authenticated:
-        return render_template('discover.html', data=data, form=form, show_login=True)
+        return render_template('discover.html', data=data, cu=cu, form=form, show_login=True)
     elif request.method == "GET" and data != 406:
 
-        return render_template('discover.html', data=data, form=form)
+        return render_template('discover.html', data=data, cu=cu, form=form)
     else:
         return redirect(request.url, 400)
 
@@ -76,13 +85,13 @@ def feed():
     form = MdeForm()
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
-    return render_template('homepageB.html', data=views.feeds(), form=form)
+    return render_template('feed.html', data=views.feeds(), form=form, cu=current_user.email)
 
 
 def archive(pid):
     if not current_user.is_authenticated:
         return redirect(url_for("login"))
-    return redirect(request.url, controller.archive(pid))
+    return redirect(request.url, archive(pid))
 
 
 def current_profile():
@@ -92,10 +101,10 @@ def current_profile():
         return redirect(url_for("login"))
 
 
-def follow(user):
+def follow(user_):
     if current_user.is_authenticated:
-        if controller.follow(user) != 406:
-            return ("", 203)
+        if follow(user_) != 406:
+            return "", 203
     else:
         return redirect(url_for("login"))
 
@@ -107,17 +116,18 @@ def profile(username=None, email=None):
     else:
         ship = views.profile(email=email)
     follower = False
-    rw = False
+
     if current_user.is_authenticated and (current_user.username == username or current_user.email == email):
         rw = True
 
-    elif username and current_user.is_authenticated and views.follows(username):
+    elif username and current_user.is_authenticated and follows(username):
         rw = False
         follower = True
     else:
         rw = False
         follower = False
-    return render_template('userB.html', info=ship[0], data=ship[1], follower=follower, rw=rw, form=form)
+    return render_template('user.html', info=ship[0], data=ship[1], follower=follower, rw=rw, form=form,
+                           cu=current_user.email)
 
 
 def edit_profile():
@@ -126,13 +136,13 @@ def edit_profile():
         bio = request.form['bio']
         email = request.form['email']
         username = request.form['username']
-        code = controller.edit_profile(name, email, username, bio)
+        code = edit_profile(name, email, username, bio)
         return redirect(url_for("user"), code)
 
 
 def like(mid):
     if current_user.is_authenticated:
-        if controller.like(mid) != 406:
+        if like(mid) != 406:
             return redirect(request.url)
     else:
         return redirect(url_for("login"), 406)
@@ -140,13 +150,13 @@ def like(mid):
 
 def comment(pid):
     if request.method == "GET":
-        req = controller.get_comments(pid).fetchall()
+        req = get_comments(pid).fetchall()
         if req != 406:
             return jsonify(req)
     elif request.method == "POST":
         content = request.form['content']
         if current_user.is_authenticated:
-            if controller.comment(pid, content=content) != 406:
+            if comment(pid, content=content) != 406:
                 return redirect(request.url)
         else:
             return redirect(url_for("login"), 406)
@@ -154,7 +164,15 @@ def comment(pid):
 
 def share(mid):
     if current_user.is_authenticated:
-        if controller.share(mid) != 406:
+        if share(mid) != 406:
             return redirect(request.url)
     else:
         return redirect(url_for("login"), 406)
+
+
+def export():
+    if current_user.is_authenticated:
+        b = FileWrapper(BytesIO(json.dumps(views.export(), indent=4).encode('utf-8')))
+        header = {f'Content-Disposition': f'attachment; filename="{current_user.email}-export.json"'}
+        return Response(b, mimetype="text/plain", direct_passthrough=True, headers=header)
+    return redirect(url_for('login'))

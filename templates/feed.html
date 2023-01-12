@@ -1,11 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
     <div style="display: none" id="current_user">{{ cu }}</div>
-
-    <div style="position: fixed;z-index: 12;padding: 15px; left: 50px;    margin-top: 15px;" class="me-4 container h1">
-        Trending
-    </div>
     {% for p in data %}
         <div class="post container my-5 py-5">
             <div class="row d-flex justify-content-center">
@@ -66,5 +61,4 @@
         </div>
 
     {% endfor %}
-
 {% endblock %}
