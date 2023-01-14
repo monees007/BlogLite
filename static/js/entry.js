@@ -68,11 +68,6 @@ function showCreatePost(t, c, pid = null, content = null) {
     document.getElementById('frame2').style.display = t
 }
 
-function insertAtCursor(myField, myValue) {
-
-
-}
-
 async function uploadFile(e) {
     const toUpload = e.files[0]
     let data = new FormData();
@@ -84,19 +79,18 @@ async function uploadFile(e) {
     }).then((response) => response.json()).then((data) => data)
 
 
-    if (res.status === 200) {
-        const myValue = `![enter image description here](${res})`
-        const myField = document.getElementById('wmd-input')
-        const pos = myField.selectionStart
-        if (pos || pos === '0') {
-            var endPos = myField.selectionEnd;
-            myField.value = myField.value.substring(0, pos) + myValue + myField.value.substring(endPos, myField.value.length);
-            myField.selectionStart = pos + myValue.length;
-            myField.selectionEnd = pos + myValue.length;
-        } else {
-            myField.value += myValue;
-        }
+    const myValue = `![enter image description here](${res})`
+    const myField = document.getElementById('wmd-input')
+    const pos = myField.selectionStart
+    if (pos || pos === '0') {
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, pos) + myValue + myField.value.substring(endPos, myField.value.length);
+        myField.selectionStart = pos + myValue.length;
+        myField.selectionEnd = pos + myValue.length;
+    } else {
+        myField.value += myValue;
     }
+
 
 
 }
@@ -133,21 +127,4 @@ async function create_post(e) {
 </div>`)
         }
     })
-}
-
-async function is_liked() {
-    let icons = document.querySelectorAll(".like");
-
-    icons.forEach(async function (el, i) {
-        let condition = await fetch('http://127.0.0.1:5000/api/entry/' + 'is_liked' + '?pid=' + el.id, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
-
-        if (condition) {
-
-            el.classList.add('liked');
-            console.log(12)
-        }
-        console.log(132)
-    });
-
-
 }

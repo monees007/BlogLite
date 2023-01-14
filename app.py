@@ -31,7 +31,6 @@ api.add_resource(ENTRY, "/api/entry", "/api/entry/<func>")
 api.add_resource(USER, "/api/user", "/api/user/<func>")
 api.add_resource(COMMENT, "/api/comment", "/api/comment/<func>")
 
-
 # APP AUTHENTICATION
 app.add_url_rule('/cred', view_func=login.credentials)
 app.add_url_rule('/export', view_func=routes.export)
@@ -45,7 +44,6 @@ app.add_url_rule('/feed', view_func=routes.feed)
 app.add_url_rule('/discover', view_func=routes.search)
 app.add_url_rule('/user/<username>', view_func=routes.profile)
 app.add_url_rule('/user', view_func=routes.current_profile)
-
 
 
 @login_manager.user_loader
