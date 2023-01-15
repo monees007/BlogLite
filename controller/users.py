@@ -8,16 +8,13 @@ from src.controller import error_printer
 from src.user import User
 
 
-
-
-
 def follow(email):
     db = get_db()
     if not db.execute(f"SELECT * FROM follow where following='{email}' and follower='{current_user.email}'").fetchone():
         try:
             db.execute(f"insert into follow (follower, following) values ('{current_user.email}','{email}');")
             db.commit()
-            return 200
+            return "Following " + email, 200
         except sqlite3.Error as err:
             db.rollback()
             error_printer(err)
@@ -26,7 +23,7 @@ def follow(email):
         try:
             db.execute(f"delete from follow where following='{email}' and follower='{current_user.email}'")
             db.commit()
-            return 417
+            return "Not Following " + email, 417
         except sqlite3.Error as err:
             db.rollback()
             error_printer(err)
@@ -105,7 +102,7 @@ def user_available(username):
         db.rollback()
         error_printer(err)
         return 406
-    return data
+    return ("Username is being used", 200) if data else ("Username is available", 417)
 
 
 def cred(cred):
@@ -117,7 +114,7 @@ def cred(cred):
         db.commit()
     except sqlite3.Error as err:
         db.rollback()
-        
+
         error_printer(err)
         return 406
 
@@ -126,26 +123,28 @@ def edit_profile(name, username, bio, profile_pic):
     db = get_db()
     try:
         db.cursor().execute(
-                f"update user set name='{name}', username='{username}', bio='{bio}',profile_pic='{profile_pic}' where email='{current_user.email}'")
+            f"update user set name='{name}', username='{username}', bio='{bio}',profile_pic='{profile_pic}' where email='{current_user.email}'")
 
         db.commit()
         return 200
     except sqlite3.Error as err:
         db.rollback()
-        
+
         error_printer(err)
         return 406
+
 
 def get_profile_pic():
     db = get_db()
     try:
-        return db.cursor().execute(f"select profile_pic from user where email='{current_user.email}'")
+        return db.cursor().execute(f"select profile_pic from user where email='{current_user.email}'").fetchone()[
+            'profile_pic']
     except sqlite3.Error as err:
         error_printer(err)
         return 500
 
-def delete_user():
 
+def delete_user():
     db = get_db()
     try:
         db.cursor().execute(f"delete from user where email='{current_user.email}'")
@@ -154,7 +153,8 @@ def delete_user():
         db.cursor().execute(f"delete from shares where doer='{current_user.email}'")
         db.cursor().execute(f"delete from post where user='{current_user.email}'")
         db.cursor().execute(f"delete from comments where user='{current_user.email}'")
-        db.cursor().execute(f"delete from follow where follower='{current_user.email}' or following='{current_user.email}'")
+        db.cursor().execute(
+            f"delete from follow where follower='{current_user.email}' or following='{current_user.email}'")
         db.commit()
 
         return True
@@ -163,4 +163,3 @@ def delete_user():
         error_printer(err)
         return 500
     return False
-

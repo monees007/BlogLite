@@ -1,0 +1,1575 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BlogLite - OpenAPI 3.0",
+    "description": "MarkDown blogging site.",
+    "contact": {
+      "email": "21f1000263@student.onlinedegree.iitm.ac.in"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000/api/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Documentations"
+    },
+    {
+      "name": "Entry",
+      "description": "Blog with image written in Markdown"
+    },
+    {
+      "name": "Comment",
+      "description": "Response written to an Entry."
+    },
+    {
+      "name": "User",
+      "description": "Operations about user"
+    },
+    {
+      "name": "Intraction",
+      "description": "Intract with entries."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Documentations"
+        ],
+        "operationId": "help",
+        "summary": "Get OpenAPI 3.0 Documentation.",
+        "responses": {
+          "200": {
+            "description": "An entry with corresponding informations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entry": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Entry",
+          "Retrive Entries"
+        ],
+        "summary": "Get an entry by post ID.",
+        "operationId": "retrive_a_post",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "Required for retriving exact entry.",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An entry with corresponding informations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Create a new entry.",
+        "description": "This endpoint can be used to create a new entry.",
+        "operationId": "create_entry",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "content",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image file name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Delete an entry by its ID.",
+        "operationId": "delete_entry",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry deleted sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Update an entry.",
+        "operationId": "update_entry",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "content",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry updated sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          }
+        }
+      }
+    },
+    "/entry/upload": {
+      "post": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Upload image file",
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image file name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          }
+        }
+      }
+    },
+    "/entry/username": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Retrive Entries"
+        ],
+        "summary": "Get an entry by post ID.",
+        "description": "Only one parameter is expected at a time.",
+        "operationId": "users_all_post",
+        "parameters": [
+          {
+            "in": "query",
+            "required": true,
+            "name": "username",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An entry with corresponding informations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No username with that username found."
+          }
+        }
+      }
+    },
+    "/entry/feed": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Retrive Entries"
+        ],
+        "summary": "Get feeds for current user.",
+        "operationId": "feeds",
+        "responses": {
+          "200": {
+            "description": "An entry with corresponding informations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entry/trending": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Retrive Entries"
+        ],
+        "summary": "Get trending entries.",
+        "operationId": "trending",
+        "responses": {
+          "200": {
+            "description": "An entry with corresponding informations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 4
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "liked": {
+                      "type": "integer"
+                    },
+                    "likes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "shared": {
+                      "type": "integer"
+                    },
+                    "shares": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entry/archive": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Intraction"
+        ],
+        "summary": "Archive a post to unpublish it.",
+        "operationId": "archive",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry archived sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          }
+        }
+      }
+    },
+    "/entry/like": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Intraction"
+        ],
+        "summary": "Un/Like a entry.",
+        "operationId": "like",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry like sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          },
+          "417": {
+            "description": "Entry unliked sucessfully."
+          }
+        }
+      }
+    },
+    "/entry/is_liked": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Intraction"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "summary": "Is entry liked by current user.",
+        "operationId": "liked",
+        "responses": {
+          "200": {
+            "description": "Entry is liked."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          },
+          "417": {
+            "description": "Entry is not liked."
+          }
+        }
+      }
+    },
+    "/entry/likes": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Likers of an entry.",
+        "operationId": "count_likes",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users that liked entry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "No entry with that id found."
+          }
+        }
+      }
+    },
+    "/comment": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Retrive all comments of an entry.",
+        "operationId": "get_comments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "description": "Id of the entry.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All comments of given Entry Id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cid": {
+                      "type": "integer"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "pid": {
+                      "type": "integer"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "Entry not found."
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Create an comment.",
+        "operationId": "create_comment",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pid",
+            "description": "Entry ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "content",
+            "description": "new comment body.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment created sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Update an comment.",
+        "operationId": "update_comment",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cid",
+            "description": "Comment ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "content",
+            "description": "new comment body.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment updated sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "Comment not found."
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Delete an comment",
+        "operationId": "delete_comment",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cid",
+            "description": "Comment ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "Comment not found."
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "summary": "Retrive profile of a user.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile of user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "backdrop": {
+                      "type": "string"
+                    },
+                    "bio": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "follower": {
+                      "type": "integer"
+                    },
+                    "following": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "posts": {
+                      "type": "integer"
+                    },
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "summary": "Update profile of a user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "summary": "Retrive profile of a user.",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted sucessfully."
+          },
+          "401": {
+            "description": "Unauthorized Access Denied."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      }
+    },
+    "/user/followings": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Retrive List of Followings",
+        "operationId": "followings",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user being followed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/followers": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Retrive List of Followers.",
+        "operationId": "followers",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user being following current user..",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/follow": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Intraction"
+        ],
+        "summary": "(Un)follow a user",
+        "operationId": "follow",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile of user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/search": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Intraction"
+        ],
+        "summary": "Search a user",
+        "operationId": "search",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "term",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profile_pic": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/is_available": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Check that username is being used or not.",
+        "operationId": "is_available",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Username is being used."
+          },
+          "417": {
+            "description": "Username is available"
+          }
+        }
+      }
+    },
+    "/user/is_following": {
+      "patch": {
+        "security": [
+          {
+            "api_key": [],
+            "api_secret": []
+          }
+        ],
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Check if user is following current_user or not.",
+        "operationId": "is_following",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "//Boolean// User is following?",
+            "content": {
+              "plain/text": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "417": {
+            "description": "Username is not available"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Entry": {
+        "type": "object",
+        "properties": {
+          "comments": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4
+          },
+          "content": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "liked": {
+            "type": "integer"
+          },
+          "likes": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profile_pic": {
+            "type": "string"
+          },
+          "shared": {
+            "type": "integer"
+          },
+          "shares": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "cid": {
+            "type": "integer"
+          },
+          "email": {
+            "type": "string"
+          },
+          "pid": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "profile_pic": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "backdrop": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "follower": {
+            "type": "integer"
+          },
+          "following": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "posts": {
+            "type": "integer"
+          },
+          "profile_pic": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "user_less": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "profile_pic": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "Users": {
+        "type": "object",
+        "properties": {
+          "profile_pic": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      },
+      "api_secret": {
+        "type": "apiKey",
+        "name": "api_secret",
+        "in": "header"
+      }
+    }
+  }
+}

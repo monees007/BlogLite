@@ -2,19 +2,21 @@ import sqlite3
 
 from flask_login import current_user, login_required
 
-from src.controller import error_printer
 from model.model import get_db
+from src.controller import error_printer
 
 
-def profile(username=None,email=None):
+def profile(username=None, email=None):
     db = get_db()
     try:
         if username:
             info = db.execute(f"select * from users where users.username is '{username}';").fetchone()
-            data = db.execute(f"SELECT * FROM posts_all where posts_all.username is '{username}' ORDER BY timestamp DESC ").fetchall()
+            data = db.execute(
+                f"SELECT * FROM posts_all where posts_all.username is '{username}' ORDER BY timestamp DESC ").fetchall()
         elif email:
             info = db.execute(f"select * from users where users.email is '{email}';").fetchone()
-            data = db.execute(f"SELECT * FROM posts_all where posts_all.email is '{email}' ORDER BY timestamp DESC ").fetchall()
+            data = db.execute(
+                f"SELECT * FROM posts_all where posts_all.email is '{email}' ORDER BY timestamp DESC ").fetchall()
         # updating liked by current user values.
         for p in range(len(data)):
             if db.cursor().execute(
@@ -26,7 +28,6 @@ def profile(username=None,email=None):
         return (info, data)
     except sqlite3.Error as err:
         error_printer(err)
-
 
 
 def top_posts():
@@ -48,6 +49,7 @@ def top_posts():
         error_printer(err)
         return 406
 
+
 @login_required
 def feeds():
     db = get_db()
@@ -67,13 +69,9 @@ def feeds():
         return 406
 
 
-
-
-
-
 def export():
-    email=current_user.email
-    db =get_db()
+    email = current_user.email
+    db = get_db()
     return {
         'profile': profile(email=email)[0],
         'entries': profile(email=email)[1],

@@ -1,11 +1,13 @@
 # Needs for refresh
-  - own new post
-  - new comments
-  - new likes
-  - user request
-  - profile edit
 
-# 
+- own new post
+- new comments
+- new likes
+- user request
+- profile edit
+
+#  
+
 ```javascript
 {
     "comments": 0,

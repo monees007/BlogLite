@@ -1,16 +1,15 @@
-from flask import request, redirect, render_template, url_for, jsonify
-from flask_login import current_user
+import json
+from io import BytesIO
 
-from src import controller, views
-from src.controller import MdeForm
+from flask import request, render_template, jsonify
+from flask import url_for, redirect, Response
+from werkzeug.wsgi import FileWrapper
+
 from controller.comments import *
 from controller.entries import *
 from controller.users import *
-from flask import render_template_string, url_for, redirect, Response
-from werkzeug.wsgi import FileWrapper
-from io import BytesIO
-import json
-from src.user import User
+from src import views
+from src.controller import MdeForm
 
 
 def user(uid=None):

@@ -47,7 +47,6 @@ async function list_doers(func, pid) {
     let label = document.getElementById('userlistLabel')
     let loaded = '';
     let follower_list = await fetch('http://127.0.0.1:5000/api/entry/' + func + '?pid=' + pid, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
-    console.log(pid,follower_list)
     for (c in follower_list) {
         let is_Following = await fetch('http://127.0.0.1:5000/api/user/' + 'is_following' + '?email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
@@ -125,7 +124,11 @@ async function search_users() {
 
 async function is_user(username) {
     let req = await fetch("http://127.0.0.1:5000/api/user/is_available?username=" + username, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
-    return !!req[0];
+    if (req === 'Username is available') {
+        return true
+
+    }
+    return false
 }
 
 async function validate_username(original) {
@@ -135,7 +138,7 @@ async function validate_username(original) {
     const username = input.value
     const test = await is_user(username).then((res) => res).then(res => res)
     const label = parent.children[0]
-    if (username && (username === original || !test)) {
+    if (username && (username === original || test) && /^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(username)) {
         input.classList.remove('is-invalid')
         label.classList.remove('validationError')
         input.classList.remove('text-danger')
@@ -184,8 +187,8 @@ async function follow(element, email) {
     }
 }
 
-async function delete_user(e,username){
-     req = await fetch("http://127.0.0.1:5000/api/user?username=" + username, {method: 'DELETE'})
+async function delete_user(e, username) {
+    req = await fetch("http://127.0.0.1:5000/api/user?username=" + username, {method: 'DELETE'})
     if (req.status === 200) {
         location.reload()
     } else {

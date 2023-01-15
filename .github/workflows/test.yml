@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Experiment
-      run: |
-        pwd             # /home/runner/work/try/try
-        mkdir hello
-        ls
-        cd hello
-        pwd             # /home/runner/work/try/try/hello
+      - name: Experiment
+        run: |
+          pwd             # /home/runner/work/try/try
+          mkdir hello
+          ls
+          cd hello
+          pwd             # /home/runner/work/try/try/hello

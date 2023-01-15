@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="e46b49e8-3fa4-4afe-ba46-9591fb955793" />
+          <option name="name" value="sqlite.db (DDL)" />
+          <option name="dbmsName" value="SQLITE" />
+          <option name="urls">
+            <array />
+          </option>
+          <option name="scopes">
+            <map>
+              <entry key="$PROJECT_DIR$/model" value="" />
+            </map>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

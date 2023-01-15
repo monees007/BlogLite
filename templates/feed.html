@@ -29,7 +29,7 @@
                             <div class="col pt-1 float-end d-flex justify-content-end">
                                 <div onclick="like(this,{{ p.id }})"
                                      class="like_btn btn btn-sm d-flex align-items-center">
-                                    <span  class="{% if p.liked %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
+                                    <span class="{% if p.liked %} liked {% endif %} like material-symbols-outlined me-2">favorite</span>
                                 </div>
 
                                 <div style="margin-left: -18px;" onclick="list_doers('likes',{{ p.id }})"
@@ -43,11 +43,11 @@
                                 <div onclick="comments_hider(this ,{{ p.id }})"
                                      class="comment_btn btn  btn-sm d-flex align-items-center">
                                     <span class="comment_icon material-symbols-outlined me-2">chat</span></div>
-                                <div onclick="comments_hider(this ,{{ p.id }})" style="margin-left: -18px;" class="like_btn btn btn-sm d-flex align-items-center me-1">
+                                <div onclick="comments_hider(this ,{{ p.id }})" style="margin-left: -18px;"
+                                     class="like_btn btn btn-sm d-flex align-items-center me-1">
                                     <span class="comment_count me-2">{{ p.comments }}</span>
                                     <p class="comment_label mb-0 d-none d-sm-block"> Comments</p>
                                 </div>
-
 
 
                             </div>

@@ -29,9 +29,9 @@ async function archive(pid) {
 
 async function delete_post(pid) {
     let req = await fetch("/api/entry?pid=" + pid, {method: 'DELETE'})
-    if (req.status === 200) {
-        location.reload()
-        toastEl = `<div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+
+    location.reload()
+    toastEl = `<div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="d-flex">
     <div class="toast-body">
     Hello, world! This is a toast message.
@@ -39,9 +39,9 @@ async function delete_post(pid) {
     <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
   </div>
 </div>`
-        const toast = new bootstrap.Toast(toastEl)
-        toast.show()
-    }
+    const toast = new bootstrap.Toast(toastEl)
+    toast.show()
+
 }
 
 function showCreatePost(t, c, pid = null, content = null) {
@@ -71,7 +71,7 @@ function showCreatePost(t, c, pid = null, content = null) {
 async function uploadFile(e) {
     const toUpload = e.files[0]
     let data = new FormData();
-    data.append('payload', toUpload)
+    data.append('file', toUpload)
 
 
     let res = await fetch(`http://127.0.0.1:5000/api/entry/upload`, {
@@ -90,7 +90,6 @@ async function uploadFile(e) {
     } else {
         myField.value += myValue;
     }
-
 
 
 }

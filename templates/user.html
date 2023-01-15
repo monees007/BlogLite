@@ -136,7 +136,7 @@
                             <div class="col pt-1 float-end d-flex justify-content-end">
                                 <div onclick="like(this,{{ p.id }})"
                                      class="like_btn btn btn-sm d-flex align-items-center">
-                                    <span  class="like {% if p.liked %} liked {% endif %} material-symbols-outlined me-2">favorite</span>
+                                    <span class="like {% if p.liked %} liked {% endif %} material-symbols-outlined me-2">favorite</span>
                                 </div>
 
                                 <div style="margin-left: -18px;" onclick="list_doers('likes',{{ p.id }})"
@@ -150,12 +150,13 @@
                                 <div onclick="comments_hider(this ,{{ p.id }})"
                                      class="comment_btn btn  btn-sm d-flex align-items-center">
                                     <span class="comment_icon material-symbols-outlined me-2">chat</span></div>
-                                <div onclick="comments_hider(this ,{{ p.id }})" style="margin-left: -18px;" class="like_btn btn btn-sm d-flex align-items-center me-1">
+                                <div onclick="comments_hider(this ,{{ p.id }})" style="margin-left: -18px;"
+                                     class="like_btn btn btn-sm d-flex align-items-center me-1">
                                     <span class="comment_count me-2">{{ p.comments }}</span>
                                     <p class="comment_label mb-0 d-none d-sm-block"> Comments</p>
                                 </div>
 
-                                <div  class="dropdown d-flex align-items-center">
+                                <div class="dropdown d-flex align-items-center">
                                     <button class="btn btn-sm " type="button"
                                             id="dropdownMenuButton1"
                                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -191,23 +192,26 @@
 
 
     {% endfor %}
-    <div class="modal fade" id="ConfirmationModal2" aria-hidden="true" aria-labelledby="ConfirmationModalLabel2" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="ConfirmationModalLabel2">Confirmation</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you really sure, you want to delete your profile?
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-bs-target="#edit_profile_modal" data-bs-toggle="modal">Cancel and Go Back</button>
-        <button class="btn btn-danger" onclick="delete_user(this, '{{ info["username"] }}')">Delete</button>
-      </div>
+    <div class="modal fade" id="ConfirmationModal2" aria-hidden="true" aria-labelledby="ConfirmationModalLabel2"
+         tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="ConfirmationModalLabel2">Confirmation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you really sure, you want to delete your profile?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-target="#edit_profile_modal" data-bs-toggle="modal">Cancel
+                        and Go Back
+                    </button>
+                    <button class="btn btn-danger" onclick="delete_user(this, '{{ info["username"] }}')">Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
     <div class="modal fade" id="edit_profile_modal" tabindex="-1" aria-labelledby="edit_profile_modalLabel"
          style="z-index: 1000"
          aria-hidden="true">
@@ -294,7 +298,7 @@
                                         <button type="button" class="btn btn-outline-danger"
                                                 data-mdb-ripple-color="dark"
                                                 style="z-index: 1;"
-                                                data-bs-target="#ConfirmationModal2"  data-bs-toggle="modal">
+                                                data-bs-target="#ConfirmationModal2" data-bs-toggle="modal">
                                             Delete Profile
                                         </button>
                                     </div>

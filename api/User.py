@@ -1,6 +1,6 @@
 import os
 
-from flask import request, jsonify, Response
+from flask import request, jsonify
 from flask_restful import Resource
 from werkzeug.utils import secure_filename
 
@@ -32,7 +32,6 @@ class User(Resource):
         username = request.args.get('username')
         profile_pic = get_profile_pic()  # default profile_pic
 
-
         if 'profile_pic' in request.files:
             file = request.files['profile_pic']
             if file.filename == '':
@@ -51,6 +50,7 @@ class User(Resource):
     @auth_required
     def delete(self):
         return ("User deleted successfully.", 200) if delete_user() else responses[401]
+
     @auth_required
     def post(self):
         try:
@@ -72,6 +72,8 @@ class User(Resource):
         if func:
             if func == "search":
                 return search(request.args.get('term'))
+            elif func == "is_available":
+                return user_available(username)
             if not (is_an_user(username=username) or is_an_user(email=email)):
                 return responses['404u']
             if func == 'followers':
@@ -81,12 +83,9 @@ class User(Resource):
                 res = followings(email=email)
                 return responses[403] if res == 406 else res
             elif func == "follow":
-                f = follow(email)
-                return Response(f, status=f)
+                return follow(email)
 
-            elif func == "is_available":
-                res = bool(user_available(username))
-                return responses[403] if res == 406 else res
+
             elif func == "is_following":
                 res = is_following(email)
                 return responses[403] if res == 406 else res

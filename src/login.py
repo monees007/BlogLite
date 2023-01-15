@@ -5,16 +5,15 @@ from functools import wraps
 from io import BytesIO
 
 import requests
-from passlib.apps import custom_app_context as pwd_context
 from flask import request, redirect, url_for, Response
 from flask_login import login_user, logout_user, current_user
 from oauthlib.oauth2 import WebApplicationClient
+from passlib.apps import custom_app_context as pwd_context
 from werkzeug.wsgi import FileWrapper
 
 SESSION_PROTECTION = None
 # session_protected=None
 
-import src.controller
 from model import model
 from src.config import *
 from src.user import User
@@ -120,7 +119,6 @@ def logout():
     if current_user.is_authenticated:
         logout_user()
     return redirect(url_for("index"))
-
 
 
 def auth_required(f):

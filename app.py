@@ -10,10 +10,10 @@ from flaskext.markdown import Markdown
 from api.Comments import Comment as COMMENT
 from api.Entry import Entry as ENTRY
 from api.User import User as USER
+from api.main import API as API
 from src import routes, login
 from src.user import User
 
-UPLOAD_FOLDER = '/static/img/uploads'
 basedir = os.path.abspath(os.path.dirname(__file__))
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
@@ -22,11 +22,12 @@ api = Api(app)
 mde = Mde(app)
 CORS(app)
 Markdown(app)
-DATABASE = 'model/sqlite.db'
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 # API ENDPOINTS
+api.add_resource(API, "/api/", )
 api.add_resource(ENTRY, "/api/entry", "/api/entry/<func>")
 api.add_resource(USER, "/api/user", "/api/user/<func>")
 api.add_resource(COMMENT, "/api/comment", "/api/comment/<func>")

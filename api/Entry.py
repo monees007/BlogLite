@@ -16,8 +16,7 @@ class Entry(Resource):
     def get(self, func=None):
         pid = request.args.get('pid') or None
         username = request.args.get('username') or None
-        feed = request.args.get('feed') or None
-        trending = request.args.get('trending') or None
+
         if pid and not is_an_entry(pid):
             return responses['404p'], 404
         if username and not is_an_user(username=username):
@@ -49,7 +48,7 @@ class Entry(Resource):
             return jsonify(req) if req != 406 else Response(status=req)
 
     @auth_required
-    def post(this, func=None):
+    def post(self, func=None):
 
         if content := request.args.get('content'):
             try:
@@ -57,25 +56,29 @@ class Entry(Resource):
                 code = create_post(user, content)
             except Exception:
                 code = responses[403]
-            return jsonify(code) if code == 201 else Response(status=code)
+            return code
+        # print(request.files.getlist('fileName'))
+        # print(request.files.getlist('file')[0].filename)
+        print(request.files['file'].filename)
+        if func == 'upload' and 'file' in request.files:
 
-        if func == 'upload' and 'payload' in request.files:
-            file = request.files['payload']
+            file = request.files['file']
+            print(file)
             if file:
                 payload = os.path.join('static/img/upload', secure_filename(file.filename))
                 file.save(payload)
                 return jsonify(payload)
 
-        return responses['404d'], 404
+        else:
+            return responses['404d'], 404
 
     @auth_required
-    def delete(this, func=None):
+    def delete(self, func=None):
         pid = request.args.get('pid')
-        req = delete_post(pid)
-        return jsonify(req) if is_an_entry(pid) else responses['404p'], 404
+        return delete_post(pid) if is_an_entry(pid) else (responses['404p'], 404)
 
     @auth_required
-    def put(this, func=None):
+    def put(self, func=None):
         pid = request.args.get('pid')
         if not is_an_entry(pid):
             return responses['404p'], 404
@@ -87,22 +90,21 @@ class Entry(Resource):
         return jsonify(code) if code == 201 else Response(status=code)
 
     @auth_required
-    def patch(this, func=None):
+    def patch(self, func=None):
 
         pid = request.args.get('pid')
         if not is_an_entry(pid):
             return responses['404p'], 404
         if func == "archive":
-            return Response(status=archive(pid))
+            return archive(pid)
         elif func == "share":
             return Response(status=share(pid))
         elif func == "like":
-            f = like(pid)
-            return Response(f, status=f)
+            return like(pid)
         elif func == "likes":
             return jsonify(get_doers('likes', pid))
         elif func == "shares":
             return jsonify(get_doers('shares', pid))
         elif func == 'is_liked':
-            return 'True', 200 if is_liked(pid) else 'False', 417
+            return ('True', 200) if is_liked(pid) else ('False', 417)
         return Response(func, 123)

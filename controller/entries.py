@@ -6,15 +6,15 @@ from model.model import get_db
 from src.controller import error_printer
 
 
-
-
-
 def create_post(user, content):
     db = get_db()
     try:
         db.execute(f"insert into post(user,content) values('{user}','{content}')")
+        entry = db.execute(
+            "select * from posts where id = (select max(id) from post)"
+        ).fetchone()
         db.commit()
-        return 201
+        return entry, 200
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
@@ -24,9 +24,9 @@ def create_post(user, content):
 def delete_post(id):
     db = get_db()
     try:
-        db.execute(f"delete from post where id='{id}'")
+        db.execute(f"delete from post where id='{id}' and user='{current_user.email}' ;")
         db.commit()
-        return 200
+        return "Entry Deleted", 200
     except sqlite3.Error as err:
         error_printer(err)
         return 406
@@ -67,7 +67,7 @@ def archive(pid):
             db.execute(f"update main.post set status='archived' where id='{pid}' and user='{current_user.email}' ;")
 
         db.commit()
-        return 200
+        return "Entry is " + post["status"], 200
     except sqlite3.Error as err:
         db.rollback()
         error_printer(err)
@@ -80,7 +80,7 @@ def like(pid):
         try:
             db.execute(f"insert into likes(doer, post) values ('{current_user.email}','{pid}');")
             db.commit()
-            return 200
+            return "Entry liked", 200
         except sqlite3.Error as err:
             db.rollback()
             error_printer(err)
@@ -89,7 +89,7 @@ def like(pid):
         try:
             db.execute(f"delete from likes where post='{pid}' and doer='{current_user.email}'")
             db.commit()
-            return 417
+            return "Entry unliked", 417
         except sqlite3.Error as err:
             db.rollback()
             error_printer(err)
