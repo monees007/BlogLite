@@ -98,7 +98,7 @@ async function edit_post(el) {
     el = el.parentNode.parentNode.children
     pid = el[0].value
     content = el[2].querySelector('#wmd-input').value
-    var url = new URL("http://127.0.0.1:5000/api/entry")
+    var url = new URL("/api/entry")
     url.searchParams.append('pid', pid)
     url.searchParams.append('content', content)
     response = await fetch(url.toString(), {
@@ -113,7 +113,7 @@ async function edit_post(el) {
 async function create_post(e) {
     el = e.parentNode.parentNode.children
     content = el[2].querySelector('#wmd-input').value
-    var url = new URL("http://127.0.0.1:5000/api/entry")
+    var url = new URL("/api/entry")
     url.searchParams.append('content', content)
     response = await fetch(url.toString(), {
         method: 'POST', credentials: 'include'
