@@ -3,9 +3,9 @@ async function list_users(func, email) {
     let container = document.getElementById('userlist');
     let label = document.getElementById('userlistLabel')
     let loaded = '';
-    let follower_list = await fetch('http://127.0.0.1:5000/api/user/' + func + '?email=' + email, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    let follower_list = await fetch('/api/user/' + func + '?email=' + email, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
     for (c in follower_list) {
-        let is_Following = await fetch('http://127.0.0.1:5000/api/user/' + 'is_following' + '?email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+        let is_Following = await fetch('/api/user/' + 'is_following' + '?email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
             <div class="me-2 d-flex justify-content-between align-items-center">
             <div class="d-flex flex-start align-items-center">
@@ -46,9 +46,9 @@ async function list_doers(func, pid) {
     let container = document.getElementById('userlist');
     let label = document.getElementById('userlistLabel')
     let loaded = '';
-    let follower_list = await fetch('http://127.0.0.1:5000/api/entry/' + func + '?pid=' + pid, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    let follower_list = await fetch('/api/entry/' + func + '?pid=' + pid, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
     for (c in follower_list) {
-        let is_Following = await fetch('http://127.0.0.1:5000/api/user/' + 'is_following' + '?email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+        let is_Following = await fetch('/api/user/' + 'is_following' + '?email=' + follower_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
             <div class="me-2 d-flex justify-content-between align-items-center">
             <div class="d-flex flex-start align-items-center">
@@ -89,9 +89,9 @@ async function search_users() {
     let term = document.getElementById('search_term').value
     let loaded = ``;
 
-    const users_list = await fetch('http://127.0.0.1:5000/api/user/search?term=' + term, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    const users_list = await fetch('/api/user/search?term=' + term, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
     for (c in users_list) {
-        let is_Following = await fetch('http://127.0.0.1:5000/api/user/is_following?email=' + users_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+        let is_Following = await fetch('/api/user/is_following?email=' + users_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
             <div class="me-2 d-flex justify-content-between align-items-center">
             <div class="d-flex flex-start align-items-center">
@@ -123,7 +123,7 @@ async function search_users() {
 }
 
 async function is_user(username) {
-    let req = await fetch("http://127.0.0.1:5000/api/user/is_available?username=" + username, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
+    let req = await fetch("/api/user/is_available?username=" + username, {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
     if (req === 'Username is available') {
         return true
 
@@ -165,7 +165,7 @@ async function update_user() {
     let data = new FormData();
     data.append('profile_pic', profile_pic)
 
-    let response = await fetch(`http://127.0.0.1:5000/api/user?username=${username}&bio=${bio}&name=${name_}`, {
+    let response = await fetch(`/api/user?username=${username}&bio=${bio}&name=${name_}`, {
         method: 'PUT', body: data
     })
     if (response.status === 200) {
@@ -179,7 +179,7 @@ async function update_user() {
 }
 
 async function follow(element, email) {
-    req = await fetch("http://127.0.0.1:5000/api/user/follow?email=" + email, {method: 'PATCH'})
+    req = await fetch("/api/user/follow?email=" + email, {method: 'PATCH'})
     if (req.status === 200) {
         element.textContent = "Unfollow";
     } else if (req.status === 417) {
@@ -188,7 +188,7 @@ async function follow(element, email) {
 }
 
 async function delete_user(e, username) {
-    req = await fetch("http://127.0.0.1:5000/api/user?username=" + username, {method: 'DELETE'})
+    req = await fetch("/api/user?username=" + username, {method: 'DELETE'})
     if (req.status === 200) {
         location.reload()
     } else {
