@@ -11,3 +11,5 @@ passlib==1.7.4
 requests==2.28.1
 Werkzeug==2.2.2
 WTForms==3.0.1
+Flask_Markdown
+gunicorn
