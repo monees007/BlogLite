@@ -49,8 +49,8 @@ class Entry(Resource):
 
     @auth_required
     def post(self, func=None):
-
-        if content := request.args.get('content'):
+        content = request.args.get('content')
+        if content:
             try:
                 user = current_user.email
                 code = create_post(user, content)
