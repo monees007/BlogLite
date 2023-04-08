@@ -18,4 +18,4 @@ $ Install the requirements
 pip install -r requirements.txt
 
 export ENV=production
-python -m flask run
+python3 -m flask run

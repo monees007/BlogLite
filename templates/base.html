@@ -78,6 +78,9 @@
                 width: 100%;
                 display: flex;
             }
+            .editorx{
+                min-width: 0;
+            }
         }
     </style>
 
@@ -146,7 +149,7 @@
                        id="ImgFile" name="post_pic" onchange="uploadFile(this)">
                 <div class="">
                     <div class="row" style="--bs-columns: 4; --bs-gap: 0.5rem;">
-                        <div class="col" style="min-width: 0px">{{ form.editor }}</div>
+                        <div class="col editorx" style="min-width: 380px">{{ form.editor }}</div>
                         <div class="col mt-5"
                              style="min-width: 405px;height: 305px;overflow: auto scroll;">{{ mde.preview }}</div>
                     </div>
