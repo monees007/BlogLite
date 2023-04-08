@@ -1,4 +1,4 @@
-async function list_users(func, email) {
+ async function list_users(func, email) {
     let children = document.getElementById('user_list_children');
     let container = document.getElementById('userlist');
     let label = document.getElementById('userlistLabel')
@@ -94,7 +94,7 @@ async function search_users() {
         let is_Following = await fetch('/api/user/is_following?email=' + users_list[c]['email'], {method: 'PATCH'}).then((response) => response.json()).then((data) => data)
         loaded += `
             <div class="me-2 d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-start align-items-center">
+            <div  class="d-flex flex-start align-items-center">
                                 <img class="rounded-circle shadow-1-strong me-3"
                                      src="${users_list[c]['profile_pic']}"
                                      alt="avatar" width="60"
@@ -102,7 +102,7 @@ async function search_users() {
                                 <div>
                                   
                                     <h6 onclick="location.href='/user/${users_list[c]['username']}'" class="fw-bold text-primary mb-1">${users_list[c]['name']}</h6>
-                                    <p class="text-muted small mb-0">
+                                    <p style="max-width: 165px; overflow: hidden" class="text-muted small mb-0 " >
                                         ${users_list[c]['username']} - ${users_list[c]['email']}
                                     </p>
                                 </div></div>

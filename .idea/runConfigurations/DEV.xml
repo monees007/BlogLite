@@ -6,6 +6,10 @@
     <option name="targetType" value="PATH" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="GOOGLE_CLIENT_ID" value="846448875684-5kca9r1coj09ha193jhist3j66m7mcvs.apps.googleusercontent.com" />
+      <env name="GOOGLE_CLIENT_SECRET" value="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" />
+    </envs>
     <option name="SDK_HOME" value="$USER_HOME$/WebstormProjects/BlogLite-blutree/venv/bin/python" />
     <option name="SDK_NAME" value="Python 3.10 (BlogLite-blutree) (2)" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />

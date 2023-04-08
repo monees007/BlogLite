@@ -36,20 +36,20 @@
                                      alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                      style="width: 150px; z-index: 1">
                                 {% if rw %}
-                                    <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal"
                                             data-bs-target="#edit_profile_modal" data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Organise
                                     </button>
                                 {% elif follower %}
                                     <button onclick="follow(this,'{{ info['email'] }}')" type="button"
-                                            class="btn btn-outline-dark" data-mdb-ripple-color="light"
+                                            class="btn btn-outline-light" data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Unfollow
                                     </button>
                                 {% else %}
                                     <button onclick="follow(this,'{{ info['email'] }}')" type="button"
-                                            class="btn btn-outline-dark"
+                                            class="btn btn-outline-light"
                                             data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Follow
@@ -281,21 +281,21 @@
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <button type="button" class="btn btn-outline-dark"
+                                        <button type="button" class="btn btn-dark"
                                                 onclick="location.href='/cred'" data-mdb-ripple-color="dark"
                                                 style="z-index: 1;">
                                             Get API Credentials
                                         </button>
                                     </div>
                                     <div class="row mb-3">
-                                        <button type="button" class="btn btn-outline-warning"
+                                        <button type="button" class="btn btn-warning"
                                                 onclick="location.href='/export'" data-mdb-ripple-color="dark"
                                                 style="z-index: 1;">
                                             Export User Data
                                         </button>
                                     </div>
                                     <div class="row mb-3">
-                                        <button type="button" class="btn btn-outline-danger"
+                                        <button type="button" class="btn btn-danger"
                                                 data-mdb-ripple-color="dark"
                                                 style="z-index: 1;"
                                                 data-bs-target="#ConfirmationModal2" data-bs-toggle="modal">
