@@ -30,27 +30,27 @@
                 <div class="col-md-12 col-lg-10 col-xl-8">
                     <div class="card">
                         <div class="rounded-top text-white d-flex flex-row"
-                             style="background: #000; height:200px;">
+                             style="background: #000; height:300px;">
                             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
                                 <img src="{{ info["profile_pic"] }}"
                                      alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                      style="width: 150px; z-index: 1">
                                 {% if rw %}
                                     <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                            data-bs-target="#edit_profile_modal" data-mdb-ripple-color="dark"
+                                            data-bs-target="#edit_profile_modal" data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Organise
                                     </button>
                                 {% elif follower %}
                                     <button onclick="follow(this,'{{ info['email'] }}')" type="button"
-                                            class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                                            class="btn btn-outline-dark" data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Unfollow
                                     </button>
                                 {% else %}
                                     <button onclick="follow(this,'{{ info['email'] }}')" type="button"
                                             class="btn btn-outline-dark"
-                                            data-mdb-ripple-color="dark"
+                                            data-mdb-ripple-color="light"
                                             style="z-index: 1;">
                                         Follow
                                     </button>
