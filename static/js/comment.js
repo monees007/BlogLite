@@ -34,7 +34,7 @@ async function comments_hider(el, pid) {
     // #get comments
     let loaded_comments = "";
     let delete_btn = ''
-    let comment_list = await fetch('http://127.0.0.1:5000/api/comment?pid=' + pid, {
+    let comment_list = await fetch('/api/comment?pid=' + pid, {
         method: 'GET',
         credentials: 'include'
     }).then((response) => response.json()).then((data) => data)
@@ -92,7 +92,7 @@ async function comments_hider(el, pid) {
 async function post_comment(inx, pid) {
     inx.disabled = true;
     content = inx.parentElement.parentElement.querySelector('#NewComment').value;
-    response = await fetch('http://127.0.0.1:5000/api/comment?pid=' + pid + '&content=' + content, {
+    response = await fetch('/api/comment?pid=' + pid + '&content=' + content, {
         method: 'POST', credentials: 'include'
     }).then((res) => {
         if (res.ok) {
