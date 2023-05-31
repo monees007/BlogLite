@@ -6,7 +6,7 @@ Flask_Login==0.6.2
 Flask_MDE==1.2.1
 Flask_RESTful==0.3.9
 Flask_WTF==1.0.1
-oauthlib==3.2.1
+oauthlib==3.2.2
 passlib==1.7.4
 requests==2.28.1
 Werkzeug==2.2.3
